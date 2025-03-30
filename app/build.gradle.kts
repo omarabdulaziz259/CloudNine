@@ -1,12 +1,25 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+val apiKey = localProperties.getProperty("API_KEY") ?: ""
 
 android {
     namespace = "com.example.cloudnine"
     compileSdk = 35
+
 
     defaultConfig {
         applicationId = "com.example.cloudnine"
@@ -16,6 +29,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "API_KEY", "$apiKey")
+
     }
 
     buildTypes {
@@ -36,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -56,4 +72,48 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    //nav graph
+    val nav_version = "2.8.8"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+    // Serialization for NavArgs
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+
+
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // GSON
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+
+    //glide
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+
+    // Room components
+    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    // Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:2.6.1")
+
+    //view model
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    // Need this or MapEffect throws exception.
+//    implementation ("androidx.appcompat:appcompat:1.5.1")
+
+    // Compose
+//    implementation ("androidx.compose.ui:ui:1.3.2")
+//    implementation ("androidx.compose.material:material:1.3.1")
+
+    // Google maps
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    // Google maps for compose
+    implementation ("com.google.maps.android:maps-compose:2.8.0")
+
+    // KTX for the Maps SDK for Android
+    implementation ("com.google.maps.android:maps-ktx:3.2.1")
+    // KTX for the Maps SDK for Android Utility Library
+    implementation ("com.google.maps.android:maps-utils-ktx:3.2.1")
 }
