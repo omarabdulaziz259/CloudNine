@@ -2,7 +2,6 @@ package com.example.cloudnine.home
 
 import android.content.SharedPreferences
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cloudnine.model.ForecastResponse
@@ -12,9 +11,7 @@ import com.example.cloudnine.model.WeatherResponse
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
 import com.example.cloudnine.utils.LocationHelper
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -31,8 +28,6 @@ class HomeViewModel(
         MutableStateFlow(Response.Loading)
     val forecastResponse = _forecastResponse.asStateFlow()
 
-    private val _message: MutableSharedFlow<String> = MutableSharedFlow()
-    val message = _message.asSharedFlow()
 
     private val _locationState = MutableStateFlow<Location?>(null)
 
@@ -56,18 +51,13 @@ class HomeViewModel(
             else -> TemperatureUnit.KELVIN
         }
         unit = units
-        Log.i("TAG", "fetchWeatherBasedOnPreference: before coroutine")
         viewModelScope.launch {
             when (locationPref) {
                 "GPS" -> {
                     initLocationHelper()
                     locationHelper.locationState.collect { location ->
                         location?.let {
-                            Log.i(
-                                "TAG",
-                                "fetchWeatherBasedOnPreference: location updated = ${it.latitude}, ${it.longitude}"
-                            )
-                            _locationState.value = it  // Ensure locationState is updated
+                            _locationState.value = it
                             getCurrentDayWeather(it.longitude, it.latitude, language, units)
                             getDailyForecasts(it.longitude, it.latitude, language, units)
 
@@ -76,7 +66,6 @@ class HomeViewModel(
                 }
 
                 "Based Location" -> {
-                    Log.i("TAG", "fetchWeatherBasedOnPreference: after coroutine Based Location")
 
                     val longPref = sharedPreferences.getFloat("longPref", 31.1f)
                     val latPref = sharedPreferences.getFloat("latPref", 31.2f)
@@ -96,17 +85,10 @@ class HomeViewModel(
         viewModelScope.launch {
             locationHelper.locationState.collect { newLocation ->
                 newLocation?.let {
-                    Log.i("TAG", "initLocationHelper: New location received = ${it.latitude}, ${it.longitude}")
                     _locationState.value = it
                 }
             }
         }
-//        requestLocation()
-    }
-
-    fun requestLocation() {
-        Log.i("TAG", "requestLocation: ")
-        locationHelper.getLocation()
     }
 
     fun getLocationFromPinnedLocation(
@@ -129,16 +111,12 @@ class HomeViewModel(
                 weatherRepository.getRemoteCurrentDayWeather(
                     lat = lat, lon = lon, temperatureUnit = temperatureUnit, language = language
                 ).catch { error ->
-                    Log.i("TAG", "getCurrentDayWeather: error")
                     _weatherResponse.emit(Response.Failure(error))
-                    _message.emit(error.message.toString())
                 }.collect {
-                    Log.i("TAG", "getCurrentDayWeather: successful")
                     _weatherResponse.emit(Response.Success<WeatherResponse>(it as WeatherResponse))
                 }
             } catch (ex: Exception) {
                 _weatherResponse.emit(Response.Failure(ex))
-                _message.emit(ex.message.toString())
             }
         }
     }
@@ -152,13 +130,11 @@ class HomeViewModel(
                     lat = lat, lon = lon, temperatureUnit = temperatureUnit, language = language
                 ).catch { error ->
                     _forecastResponse.emit(Response.Failure(error))
-                    _message.emit(error.message.toString())
                 }.collect {
                     _forecastResponse.emit(Response.Success<ForecastResponse>(it as ForecastResponse))
                 }
             } catch (ex: Exception) {
                 _forecastResponse.emit(Response.Failure(ex))
-                _message.emit(ex.message.toString())
             }
         }
     }

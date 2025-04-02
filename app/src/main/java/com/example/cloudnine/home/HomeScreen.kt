@@ -1,8 +1,5 @@
 package com.example.cloudnine.home
 
-import android.content.SharedPreferences
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -10,10 +7,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +20,6 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.cloudnine.R
 import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.Response
-import com.example.cloudnine.utils.LocationHelper
 import com.example.cloudnine.utils.convertUnixTimestampToDateTime
 import kotlin.math.roundToInt
 
@@ -61,7 +55,6 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                 }
 
                 val weatherData = weatherState.data
-                val forecastData = forecastState.data
 
                 val currentTemperature = weatherData.main?.temp
                 val cityName = weatherData.name
@@ -75,7 +68,6 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     )
                 val dateAndTime = convertUnixTimestampToDateTime(weatherData.dt ?: 0)
                 val weatherIcon = weatherData.weather.firstOrNull()?.icon ?: ""
-//                val ayhaga = forecastData.list.get(0).
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -129,6 +121,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     }
                 }
 
+                val forecastData = forecastState.data
                 val groupedForecast = forecastData.list.groupBy { it.dtTxt?.substring(0, 10) }
                 val todayKey = groupedForecast.keys.firstOrNull()
                 val todayForecast = groupedForecast[todayKey] ?: emptyList()
@@ -182,7 +175,6 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                                 .padding(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-//                            Log.i("TAG", "HomeScreen: $date")
 
                             Text(text = convertUnixTimestampToDateTime(
                                 forecasts[0].dt ?: 0
@@ -193,26 +185,6 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     }
                 }
             }
-//                LazyRow (
-//                    Modifier.padding(10.dp)
-//                        .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
-//                ){
-//                    items(upcomingDays.entries.toList()) { (date, list) ->
-//                        Column(
-//                            modifier = Modifier
-//                                .padding(10.dp),
-//                            horizontalAlignment = Alignment.CenterHorizontally) {
-//                            Text(text = convertUnixTimestampToDateTime(upcomingDays.entries.toList()[index].value[index].dt ?: 0).substring(0, 3))
-//                            GlideImage(
-//                                model = "https://openweathermap.org/img/wn/${todayForecast[index].weather.firstOrNull()?.icon}@2x.png",
-//                                contentDescription = "Today's Weather Icon",
-//                                modifier = Modifier.size(40.dp)
-//                            )
-//                            Text(text = "${todayForecast[index].main?.temp}°$tempUnit", modifier = Modifier.padding(5.dp))
-//                        }
-//                    }
-//                }
-//            }
 
                 forecastState is Response.Failure && weatherState is Response.Failure -> {
                     Column(
@@ -226,25 +198,3 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
             }
         }
     }
-//
-//LazyRow {
-//    items(5) { index ->
-//        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//            Text(text = "Time $index")
-//            Spacer(Modifier.height(6.dp))
-//            Text(text = "Hourly Icon")
-//            Spacer(Modifier.height(6.dp))
-//            Text(text = "Temperature °C")
-//        }
-//    }
-//}
-//
-//LazyRow {
-//    items(5) { index ->
-//        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//            Text(text = "Date $index")
-//            Text(text = "High: XX°C")
-//            Text(text = "Low: XX°C")
-//        }
-//    }
-//}
