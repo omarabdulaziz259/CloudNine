@@ -27,7 +27,7 @@ data class WeatherResponse(
     @SerializedName("clouds")
     var clouds: Clouds? = Clouds(),
     @SerializedName("dt")
-    var dt: Int? = null,
+    var dt: Long? = null,
     @SerializedName("sys")
     var sys: Sys? = Sys(),
     @SerializedName("timezone")

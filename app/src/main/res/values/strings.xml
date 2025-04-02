@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">CloudNine</string>
+    <string name="n_a">N/a</string>
+    <string name="loading">Loading...</string>
+    <string name="c">C</string>
+    <string name="k">K</string>
+    <string name="f">F</string>
+    <string name="km_h">KM/H</string>
+    <string name="mph">mph</string>
 </resources>
