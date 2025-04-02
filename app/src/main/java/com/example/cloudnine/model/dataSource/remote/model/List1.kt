@@ -2,9 +2,9 @@ package com.example.cloudnine.model.dataSource.remote.model
 
 import com.google.gson.annotations.SerializedName
 
-data class List(
+data class List1(
 
-    @SerializedName("dt") var dt: Int? = null,
+    @SerializedName("dt") var dt: Long? = null,
     @SerializedName("main") var main: Main? = Main(),
     @SerializedName("weather") var weather: ArrayList<Weather> = arrayListOf(),
     @SerializedName("clouds") var clouds: Clouds? = Clouds(),

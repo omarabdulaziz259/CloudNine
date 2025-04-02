@@ -1,4 +1,4 @@
-package com.example.cloudnine.model.dataSource
+package com.example.cloudnine.model
 
 sealed class Response<out T> {
     data object Loading : Response<Nothing>()

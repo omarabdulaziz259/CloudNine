@@ -1,9 +1,16 @@
 package com.example.cloudnine.home
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,34 +24,32 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.cloudnine.R
 import com.example.cloudnine.model.TemperatureUnit
-import com.example.cloudnine.model.dataSource.Response
+import com.example.cloudnine.model.Response
 import com.example.cloudnine.utils.LocationHelper
 import com.example.cloudnine.utils.convertUnixTimestampToDateTime
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel) {
     homeViewModel.fetchWeatherBasedOnPreference()
     val weatherState = homeViewModel.weatherResponse.collectAsState().value
-    LaunchedEffect(weatherState) {
-        when (weatherState) {
-            is Response.Success -> {
-                // Perform any action when new weather data is available
-                println("Weather data updated: ${weatherState.data}")
-            }
-            is Response.Failure -> {
-                println("Weather data failed to load: ${weatherState.error.message}")
-            }
-            else -> {}
-        }
-    }
+    val forecastState = homeViewModel.forecastResponse.collectAsState().value
+
     Column(modifier = Modifier.padding(16.dp)) {
-        when (weatherState) {
-            is Response.Loading -> {
-                Text(text = stringResource(R.string.loading))
+        when {
+            forecastState is Response.Loading && weatherState is Response.Loading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
             }
 
-            is Response.Success -> {
+            forecastState is Response.Success && weatherState is Response.Success -> {
+
                 var tempUnit = when (homeViewModel.unit) {
                     TemperatureUnit.KELVIN -> stringResource(R.string.k)
                     TemperatureUnit.CELSIUS -> stringResource(R.string.c)
@@ -56,6 +61,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                 }
 
                 val weatherData = weatherState.data
+                val forecastData = forecastState.data
 
                 val currentTemperature = weatherData.main?.temp
                 val cityName = weatherData.name
@@ -69,6 +75,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     )
                 val dateAndTime = convertUnixTimestampToDateTime(weatherData.dt ?: 0)
                 val weatherIcon = weatherData.weather.firstOrNull()?.icon ?: ""
+//                val ayhaga = forecastData.list.get(0).
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -84,85 +91,160 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     )
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    GlideImage(
-                        model = "https://openweathermap.org/img/wn/" + "${weatherIcon}@3x.png",
-                        contentDescription = "Weather Descriptive Icon",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                Spacer(Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "$currentTemperature °$tempUnit")
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        GlideImage(
+                            model = "https://openweathermap.org/img/wn/${weatherIcon}@2x.png",
+                            contentDescription = "Weather Descriptive Icon",
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Text(text = "$currentTemperature °$tempUnit")
+                        Text(text = cityName ?: stringResource(R.string.n_a))
+                    }
                 }
 
-                Text(text = cityName ?: stringResource(R.string.n_a))
-                Box(
+                Row(
                     modifier = Modifier
+                        .padding(10.dp)
                         .fillMaxWidth()
-                        .border(width = 2.dp, color = Color.Blue)
+                        .border(width = 2.dp, color = Color.Black),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column {
+                    Column(Modifier.padding(10.dp)) {
                         Text(text = "Humidity: $humidity%")
                         Text(text = "Clouds: $cloudCoverage%")
+                    }
+                    Column(Modifier.padding(10.dp)) {
                         Text(text = "Wind Speed: $windSpeed $speedUnit")
                         Text(text = "Pressure: $pressure hPa")
                     }
                 }
-            }
 
-            is Response.Failure -> {
-                Text(text = "Error: ${weatherState.error.message}")
+                val groupedForecast = forecastData.list.groupBy { it.dtTxt?.substring(0, 10) }
+                val todayKey = groupedForecast.keys.firstOrNull()
+                val todayForecast = groupedForecast[todayKey] ?: emptyList()
+                val upcomingDays = groupedForecast.filterKeys { it != todayKey }
+
+                LazyRow(
+                    Modifier
+                        .padding(10.dp)
+                        .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
+                ) {
+                    items(todayForecast.size) { index ->
+                        Column(
+                            modifier = Modifier
+                                .padding(10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = convertUnixTimestampToDateTime(
+                                    todayForecast[index].dt ?: 0
+                                ).substring(0, 3)
+                            )
+                            GlideImage(
+                                model = "https://openweathermap.org/img/wn/${todayForecast[index].weather.firstOrNull()?.icon}@2x.png",
+                                contentDescription = "Today's Weather Icon",
+                                modifier = Modifier.size(40.dp)
+                            )
+                            Text(
+                                text = "${todayForecast[index].main?.temp}°$tempUnit",
+                                modifier = Modifier.padding(5.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(20.dp))
+
+                LazyRow(
+                    Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
+                ) {
+                    items(upcomingDays.entries.toList()) { (_, forecasts) ->
+                        val minTemp =
+                            forecasts.minOfOrNull { it.main?.temp ?: Double.MIN_VALUE } ?: 0.0
+                        val maxTemp =
+                            forecasts.maxOfOrNull { it.main?.temp ?: Double.MAX_VALUE } ?: 0.0
+
+                        Column(
+                            modifier = Modifier
+                                .padding(10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+//                            Log.i("TAG", "HomeScreen: $date")
+
+                            Text(text = convertUnixTimestampToDateTime(
+                                forecasts[0].dt ?: 0
+                            ).substring(0, 3))
+                            Text(text = "H: ${maxTemp.roundToInt()}°$tempUnit")
+                            Text(text = "L: ${minTemp.roundToInt()}°$tempUnit")
+                        }
+                    }
+                }
+            }
+//                LazyRow (
+//                    Modifier.padding(10.dp)
+//                        .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
+//                ){
+//                    items(upcomingDays.entries.toList()) { (date, list) ->
+//                        Column(
+//                            modifier = Modifier
+//                                .padding(10.dp),
+//                            horizontalAlignment = Alignment.CenterHorizontally) {
+//                            Text(text = convertUnixTimestampToDateTime(upcomingDays.entries.toList()[index].value[index].dt ?: 0).substring(0, 3))
+//                            GlideImage(
+//                                model = "https://openweathermap.org/img/wn/${todayForecast[index].weather.firstOrNull()?.icon}@2x.png",
+//                                contentDescription = "Today's Weather Icon",
+//                                modifier = Modifier.size(40.dp)
+//                            )
+//                            Text(text = "${todayForecast[index].main?.temp}°$tempUnit", modifier = Modifier.padding(5.dp))
+//                        }
+//                    }
+//                }
+//            }
+
+                forecastState is Response.Failure && weatherState is Response.Failure -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "Error: ${weatherState.error.message}")
+                    }
+                }
             }
         }
     }
-}
 //
-//            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-//            Text(text = , modifier = Modifier.align(Alignment.CenterVertically))
-//            Column(horizontalAlignment = Alignment.End) {
-//                Text(text = "Date")
-//                Text(text = "Time")
-//            }
+//LazyRow {
+//    items(5) { index ->
+//        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//            Text(text = "Time $index")
+//            Spacer(Modifier.height(6.dp))
+//            Text(text = "Hourly Icon")
+//            Spacer(Modifier.height(6.dp))
+//            Text(text = "Temperature °C")
 //        }
-//        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-//            // Placeholder for weather icon
-//            Text(text = "Weather Icon", modifier = Modifier.align(Alignment.CenterVertically))
+//    }
+//}
+//
+//LazyRow {
+//    items(5) { index ->
+//        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//            Text(text = "Date $index")
+//            Text(text = "High: XX°C")
+//            Text(text = "Low: XX°C")
 //        }
-//        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-//            Text(text = "Current Temperature °C")
-//        }
-//        Text(text = "City Name")
-//        Box(modifier = Modifier.fillMaxWidth()) {
-//            Column {
-//                Text(text = "Humidity: XX%")
-//                Text(text = "Cloud Coverage: XX%")
-//                Text(text = "Wind Speed: XX km/h")
-//                Text(text = "Pressure: XX hPa")
-//            }
-//        }
-//        LazyRow {
-//            items(5) { index ->
-//                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                    Text(text = "Time $index")
-//                    // Placeholder for hourly weather icon
-//                    Text(text = "Hourly Icon")
-//                    Text(text = "Temperature °C")
-//                }
-//            }
-//        }
-//        LazyRow {
-//            items(5) { index ->
-//                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                    Text(text = "Date $index")
-//                    Text(text = "High: XX°C")
-//                    Text(text = "Low: XX°C")
-//                }
-//            }
-//        }
+//    }
+//}

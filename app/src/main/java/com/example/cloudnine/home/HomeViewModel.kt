@@ -9,7 +9,7 @@ import com.example.cloudnine.model.ForecastResponse
 import com.example.cloudnine.model.Language
 import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.WeatherResponse
-import com.example.cloudnine.model.dataSource.Response
+import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
 import com.example.cloudnine.utils.LocationHelper
 import kotlinx.coroutines.flow.MutableSharedFlow
