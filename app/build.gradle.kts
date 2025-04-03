@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+
 }
 
 val localProperties = Properties()
@@ -15,6 +17,7 @@ if (localPropertiesFile.exists()) {
 }
 
 val apiKey = localProperties.getProperty("API_KEY") ?: ""
+val googleApiKey = localProperties.getProperty("GOOGLE_API_KEY") ?: ""
 
 android {
     namespace = "com.example.cloudnine"
@@ -30,6 +33,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_KEY", "$apiKey")
+        buildConfigField("String", "GOOGLE_API_KEY", "$googleApiKey")
 
     }
 
@@ -116,4 +120,14 @@ dependencies {
     implementation ("com.google.maps.android:maps-ktx:3.2.1")
     // KTX for the Maps SDK for Android Utility Library
     implementation ("com.google.maps.android:maps-utils-ktx:3.2.1")
+
+    //Google Maps
+    implementation ("com.google.android.gms:play-services-maps:19.0.0")
+    implementation ("com.google.android.libraries.places:places:3.3.0")
+
+}
+secrets {
+    propertiesFileName = "secrets.properties"
+
+    defaultPropertiesFileName = "local.properties"
 }

@@ -1,16 +1,12 @@
 package com.example.cloudnine.navigation
 
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
-import com.example.cloudnine.navigation.BottomNavItem
 
 @Composable
 fun BottomNavigationBar(navController: NavController, currentRoute: String) {

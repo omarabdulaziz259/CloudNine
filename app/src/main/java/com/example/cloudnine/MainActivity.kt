@@ -16,6 +16,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cloudnine.alert.AlertScreen
 import com.example.cloudnine.favorite.FavoriteScreen
+import com.example.cloudnine.favorite.FavoriteViewModel
+import com.example.cloudnine.favorite.MapScreen
 import com.example.cloudnine.home.HomeScreen
 import com.example.cloudnine.home.HomeViewModel
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
@@ -31,6 +33,7 @@ class MainActivity : ComponentActivity() {
         val locationHelper = LocationHelper(this)
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val homeViewModel = HomeViewModel(weatherRepository, locationHelper, sharedPreferences)
+        val favoriteViewModel = FavoriteViewModel(weatherRepository, sharedPreferences)
         locationHelper.getLocation()
         setContent {
             val navController = rememberNavController()
@@ -42,7 +45,7 @@ class MainActivity : ComponentActivity() {
                 }
             ) { innerPadding ->
                 Column(modifier = Modifier.padding(innerPadding)) {
-                    NavigationGraph(navController, homeViewModel, locationHelper)
+                    NavigationGraph(navController, homeViewModel, favoriteViewModel)
                 }
             }
         }
@@ -50,35 +53,26 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController, homeViewModel: HomeViewModel, locationHelper: LocationHelper) {
+fun NavigationGraph(navController: NavHostController, homeViewModel: HomeViewModel, favoriteViewModel: FavoriteViewModel) {
     NavHost(navController, startDestination = BottomNavItem.Home.route) {
         composable(BottomNavItem.Home.route) { HomeScreen(homeViewModel) }
-        composable(BottomNavItem.Favorite.route) { FavoriteScreen() }
+        composable(BottomNavItem.Favorite.route) { FavoriteScreen(favoriteViewModel, navController) }
         composable(BottomNavItem.Alert.route) { AlertScreen() }
         composable(BottomNavItem.Settings.route) { SettingsScreen() }
+        composable("map_screen_from_fav") {
+            MapScreen(
+                fromSetting = false,
+                navController = navController,
+                favViewModel = favoriteViewModel
+            )
+        }
+        composable("map_screen_from_settings") {
+            MapScreen(
+                fromSetting = true,
+                navController = navController,
+                favViewModel = favoriteViewModel
+            )
+        }
     }
 }
-//        Log.i("TAG", "onCreate: ${BuildConfig.API_KEY}")
-//        val weatherRemoteDataSource = WeatherRemoteDataSource.getInstance()
-//        var weatherResponse by mutableStateOf<WeatherResponse?>(null)
-//        lifecycleScope.launch {
-//            try {
-//                weatherRemoteDataSource.getCurrentDayWeather(
-//                    lon = 10.99,
-//                    lat = 44.34,
-//                    units = TemperatureUnit.KELVIN,
-//                    language = Language.ENGLISH
-//                ).collect { response ->
-//                    Log.i("MainActivity", "Weather Data: $response")
-//                    weatherResponse = response
-//                }
-//            } catch (e: Exception) {
-//                Log.e("MainActivity", "Error fetching weather", e)
-//            }
-//        }
-//
-//        setContent {
-//            weatherResponse?.let {
-//                Text(text = it.name.toString())
-//            } ?: Text(text = "Loading...")
-//        }
+

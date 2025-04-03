@@ -7,4 +7,14 @@
     <string name="f">F</string>
     <string name="km_h">KM/H</string>
     <string name="mph">mph</string>
+    <string name="city_added_successfully">City added successfully</string>
+    <string name="error_failed_to_insert_city">Error : Failed to insert city</string>
+    <string name="city_deleted_successfully">City deleted successfully</string>
+    <string name="error_failed_to_delete_city">Error: Failed to delete City</string>
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
+    <string name="country_name">country name</string>
+    <string name="add_to_favourite">add to favourite</string>
+    <string name="set_your_location">set your location</string>
+    <string name="set_your_destination">set your destination</string>
 </resources>
