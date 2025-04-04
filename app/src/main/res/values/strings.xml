@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">CloudNine</string>
-    <string name="n_a">N/a</string>
+    <string name="n_a">N/A</string>
     <string name="loading">Loading...</string>
     <string name="c">C</string>
     <string name="k">K</string>
@@ -32,4 +32,19 @@
     <string name="gps">GPS</string>
     <string name="manual">Manual</string>
     <string name="location_based">Location Based</string>
+    <string name="humidity">Humidity</string>
+    <string name="clouds">Clouds</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="pressure">Pressure</string>
+    <string name="h">H</string>
+    <string name="l">L</string>
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="alert">Alert</string>
+    <string name="settings">Settings</string>
+    <string name="hpa">hPa</string>
+    <string name="delete_city">Delete City</string>
+    <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

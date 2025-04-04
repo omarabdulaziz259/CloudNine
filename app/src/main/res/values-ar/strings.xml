@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CloudNine</string>
+    <string name="n_a">غير متوفر</string>
+    <string name="loading">جارٍ التحميل...</string>
+    <string name="c">س</string>
+    <string name="k">ك</string>
+    <string name="f">ف</string>
+    <string name="km_h">كم/س</string>
+    <string name="mph">ميل/س</string>
+    <string name="city_added_successfully">تمت إضافة المدينة بنجاح</string>
+    <string name="error_failed_to_insert_city">خطأ: فشل في إضافة المدينة</string>
+    <string name="city_deleted_successfully">تم حذف المدينة بنجاح</string>
+    <string name="error_failed_to_delete_city">خطأ: فشل في حذف المدينة</string>
+    <string name="latitude">خط العرض</string>
+    <string name="longitude">خط الطول</string>
+    <string name="country_name">اسم الدولة</string>
+    <string name="add_to_favourite">أضف إلى المفضلة</string>
+    <string name="set_your_location">حدد موقعك</string>
+    <string name="set_your_destination">حدد وجهتك</string>
+    <string name="no_favorite_cities">لا توجد مدن مفضلة</string>
+    <string name="error_fetching_favorite_cities">خطأ: فشل في جلب المدن المفضلة</string>
+    <string name="error_fetching_data_for_this_city">خطأ: فشل في جلب البيانات لهذه المدينة</string>
+    <string name="choose_location_on_map">اختر الموقع من الخريطة</string>
+    <string name="language">اللغة</string>
+    <string name="arabic">العربية</string>
+    <string name="english">الإنجليزية</string>
+    <string name="default_">الافتراضية</string>
+    <string name="temperature_unit">وحدة درجة الحرارة</string>
+    <string name="kelvin">كلفن</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="celsius">سيلسيوس</string>
+    <string name="gps">نظام تحديد المواقع (GPS)</string>
+    <string name="manual">يدوي</string>
+    <string name="location_based">الموقع الجغرافي</string>
+    <string name="pressure">الضغط</string>
+    <string name="h">ع</string>
+    <string name="l">ص</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="clouds">الغيوم</string>
+    <string name="wind_speed">سرعة الرياح</string>
+    <string name="home">" الصفحة الرئيسية"</string>
+    <string name="favorite">المفضلة</string>
+    <string name="alert">التنبيهات</string>
+    <string name="settings">الإعدادات</string>
+    <string name="hpa">هكتوباسكال</string>
+</resources>

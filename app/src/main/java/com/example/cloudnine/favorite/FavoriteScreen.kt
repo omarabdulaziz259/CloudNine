@@ -1,6 +1,5 @@
 package com.example.cloudnine.favorite
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,7 +63,6 @@ fun FavoriteScreen(favoriteViewModel: FavoriteViewModel, navController: NavContr
 
     var selectedCity = remember { mutableStateOf<FavoriteCity?>(null) }
     var isBottomSheetVisible = remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         floatingActionButton = {
@@ -89,7 +86,7 @@ fun FavoriteScreen(favoriteViewModel: FavoriteViewModel, navController: NavContr
                 }
 
                 is Response.Success -> {
-                    if (favoriteCities.data != null && favoriteCities.data.size > 0) {
+                    if (favoriteCities.data != null && favoriteCities.data.isNotEmpty()) {
                         LazyColumn {
                             items(favoriteCities.data.size) { index ->
                                 CityItem(
@@ -167,7 +164,12 @@ fun CityItem(
         Column(modifier = Modifier.padding(16.dp)) {
             Text(city.cityName, fontSize = 20.sp, color = Color.White, fontWeight = FontWeight.Bold)
             Text(
-                "Lat: ${city.latitude}, Lon: ${city.longitude}",
+                "${stringResource(R.string.latitude)}: ${city.latitude}",
+                fontSize = 16.sp,
+                color = Color.White.copy(alpha = 0.8f)
+            )
+            Text(
+                "${stringResource(R.string.longitude)}: ${city.longitude}",
                 fontSize = 16.sp,
                 color = Color.White.copy(alpha = 0.8f)
             )
@@ -197,13 +199,13 @@ fun CityItem(
 fun DeleteConfirmationDialog(cityName: String, onConfirm: () -> Unit, onDismiss: () -> Unit) {
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Delete City") },
-        text = { Text("Are you sure you want to delete $cityName?") },
+        title = { Text(stringResource(R.string.delete_city)) },
+        text = { Text("${stringResource(R.string.are_you_sure_you_want_to_delete)} $cityName?") },
         confirmButton = {
-            Button(onClick = onConfirm) { Text("Yes") }
+            Button(onClick = onConfirm) { Text(stringResource(R.string.yes)) }
         },
         dismissButton = {
-            Button(onClick = onDismiss) { Text("No") }
+            Button(onClick = onDismiss) { Text(stringResource(R.string.no)) }
         }
     )
 }
@@ -213,7 +215,7 @@ fun DeleteConfirmationDialog(cityName: String, onConfirm: () -> Unit, onDismiss:
 fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteViewModel) {
     val weatherResponse = favoriteViewModel.weatherResponse.collectAsStateWithLifecycle().value
     val forecastResponse = favoriteViewModel.forecastResponse.collectAsStateWithLifecycle().value
-
+    favoriteViewModel.updatePref()
     favoriteViewModel.getForecastForCity(city)
     favoriteViewModel.getWeatherForCity(city)
     when {
@@ -261,7 +263,7 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                 weatherData.weather.firstOrNull()?.description ?: stringResource(
                     R.string.n_a
                 )
-            val dateAndTime = convertUnixTimestampToDateTime(weatherData.dt ?: 0)
+            val dateAndTime = convertUnixTimestampToDateTime(weatherData.dt ?: 0, favoriteViewModel.langPref)
             val weatherIcon = weatherData.weather.firstOrNull()?.icon ?: ""
 
             val forecastData = forecastResponse.data
@@ -304,7 +306,7 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                         modifier = Modifier.size(40.dp)
                     )
                     Text(text = "$currentTemperature °$tempUnit")
-                    Text(text = cityName ?: stringResource(R.string.n_a))
+                    Text(text = cityName)
                 }
             }
 
@@ -317,12 +319,12 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(Modifier.padding(10.dp)) {
-                    Text(text = "Humidity: $humidity%")
-                    Text(text = "Clouds: $cloudCoverage%")
+                    Text(text = "${stringResource(R.string.humidity)}: $humidity%")
+                    Text(text = "${stringResource(R.string.clouds)}: $cloudCoverage%")
                 }
                 Column(Modifier.padding(10.dp)) {
-                    Text(text = "Wind Speed: $windSpeed $speedUnit")
-                    Text(text = "Pressure: $pressure hPa")
+                    Text(text = "${stringResource(R.string.wind_speed)} : $windSpeed $speedUnit")
+                    Text(text = "${stringResource(R.string.pressure)}: $pressure ${stringResource(R.string.hpa)}")
                 }
             }
 
@@ -339,7 +341,7 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                     ) {
                         Text(
                             text = convertUnixTimestampToDateTime(
-                                todayForecast[index].dt ?: 0
+                                todayForecast[index].dt ?: 0, favoriteViewModel.langPref
                             ).substring(0, 3)
                         )
                         GlideImage(
@@ -377,11 +379,11 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
 
                         Text(
                             text = convertUnixTimestampToDateTime(
-                                forecasts[0].dt ?: 0
+                                forecasts[0].dt ?: 0, favoriteViewModel.langPref
                             ).substring(0, 3)
                         )
-                        Text(text = "H: ${maxTemp.roundToInt()}°$tempUnit")
-                        Text(text = "L: ${minTemp.roundToInt()}°$tempUnit")
+                        Text(text = "${stringResource(R.string.h)}: ${maxTemp.roundToInt()}°$tempUnit")
+                        Text(text = "${stringResource(R.string.l)}: ${minTemp.roundToInt()}°$tempUnit")
                     }
                 }
             }

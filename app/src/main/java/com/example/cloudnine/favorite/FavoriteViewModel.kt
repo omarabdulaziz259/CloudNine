@@ -46,20 +46,20 @@ class FavoriteViewModel(
     val message = _message.asSharedFlow()
 
 
-    val langPref = sharedPreferences.getString("langPref", "ENGLISH")
+    var langPref = sharedPreferences.getString(SettingsHelper.API_LANGUAGE_PREF, "English") ?: "English"
 
-    val language = when (langPref) {
-        "ARABIC" -> Language.ARABIC
-        "ENGLISH" -> Language.ENGLISH
+    var language = when (langPref) {
+        "Arabic" -> Language.ARABIC
+        "English" -> Language.ENGLISH
         else -> Language.ENGLISH
     }
 
-    val unitsPref = sharedPreferences.getString("unitsPref", "KELVIN")
+    var unitsPref = sharedPreferences.getString(SettingsHelper.TEMP_UNIT_PREF, "Kelvin")
 
-    val units = when (unitsPref) {
-        "KELVIN" -> TemperatureUnit.KELVIN
-        "CELSIUS" -> TemperatureUnit.CELSIUS
-        "FAHRENHEIT" -> TemperatureUnit.FAHRENHEIT
+    var units = when (unitsPref) {
+        "Kelvin" -> TemperatureUnit.KELVIN
+        "Celsius" -> TemperatureUnit.CELSIUS
+        "Fahrenheit" -> TemperatureUnit.FAHRENHEIT
         else -> TemperatureUnit.KELVIN
     }
 
@@ -135,9 +135,15 @@ class FavoriteViewModel(
         }
     }
 
-    fun getForecastForCity(city: FavoriteCity){
-        getDailyForecasts(lat = city.latitude, lon = city.longitude, temperatureUnit = units, language = language)
+    fun getForecastForCity(city: FavoriteCity) {
+        getDailyForecasts(
+            lat = city.latitude,
+            lon = city.longitude,
+            temperatureUnit = units,
+            language = language
+        )
     }
+
     fun getWeatherForCity(city: FavoriteCity) {
         viewModelScope.launch {
             try {
@@ -148,12 +154,14 @@ class FavoriteViewModel(
                     language = language
                 ).catch { _weatherResponse.emit(Response.Failure(it)) }
                     .collect { _weatherResponse.emit(Response.Success<WeatherResponse>(it as WeatherResponse)) }
-            } catch (e: Exception){ _weatherResponse.emit(Response.Failure(e))}
+            } catch (e: Exception) {
+                _weatherResponse.emit(Response.Failure(e))
+            }
         }
     }
 
 
-    fun saveManualLonLat(lon: Double, lat: Double){
+    fun saveManualLonLat(lon: Double, lat: Double) {
         sharedPreferences.edit() {
             putFloat(SettingsHelper.LONG_PREF, lon.toFloat())
             putFloat(SettingsHelper.LAT_PREF, lat.toFloat())
@@ -164,7 +172,7 @@ class FavoriteViewModel(
         val geocoder = Geocoder(context)
         return try {
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-            if (addresses?.isNotEmpty() == true) {
+            if (addresses?.isNotEmpty() ?: false) {
                 addresses[0].countryName
             } else {
                 null
@@ -177,6 +185,25 @@ class FavoriteViewModel(
 
     fun getCountryName(countryCode: String?): String {
         return Locale("", countryCode).displayCountry ?: "UnSpecified"
+    }
+
+    fun updatePref(){
+        langPref = sharedPreferences.getString(SettingsHelper.API_LANGUAGE_PREF, "English") ?: "English"
+
+        language = when (langPref) {
+            "Arabic" -> Language.ARABIC
+            "English" -> Language.ENGLISH
+            else -> Language.ENGLISH
+        }
+
+        unitsPref = sharedPreferences.getString(SettingsHelper.TEMP_UNIT_PREF, "Kelvin")
+
+        units = when (unitsPref) {
+            "Kelvin" -> TemperatureUnit.KELVIN
+            "Celsius" -> TemperatureUnit.CELSIUS
+            "Fahrenheit" -> TemperatureUnit.FAHRENHEIT
+            else -> TemperatureUnit.KELVIN
+        }
     }
 
 }

@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,9 +20,9 @@ import com.example.cloudnine.R
 
 @Composable
 fun SettingsScreen(settingsViewModel: SettingsViewModel) {
-    var selectedLanguage = remember { settingsViewModel.selectedLanguage }
-    var selectedTempUnit = remember { settingsViewModel.selectedTempUnit }
-    var selectedLocation = remember { settingsViewModel.selectedLocation }
+    var selectedLanguage = settingsViewModel.selectedLanguage
+    var selectedTempUnit = settingsViewModel.selectedTempUnit
+    var selectedLocation = settingsViewModel.selectedLocation
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(stringResource(R.string.language), style = MaterialTheme.typography.titleLarge)
@@ -33,9 +32,19 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                 stringResource(R.string.english),
                 stringResource(R.string.default_)
             ),
-            selectedOption = selectedLanguage.value,
+            selectedOption = when(selectedLanguage.value) {
+                "Arabic" -> stringResource(R.string.arabic)
+                "English" -> stringResource(R.string.english)
+                "Default" -> stringResource(R.string.default_)
+                else -> stringResource(R.string.default_)
+            },
             onOptionSelected = {
-               settingsViewModel.saveLanguage(it)
+                when(it){
+                    "العربية" -> settingsViewModel.saveLanguage("Arabic")
+                    "الإنجليزية" -> settingsViewModel.saveLanguage("English")
+                    "الافتراضية" -> settingsViewModel.saveLanguage("Default")
+                    else -> settingsViewModel.saveLanguage(it)
+                }
             }
         )
 
@@ -48,9 +57,19 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                 stringResource(R.string.fahrenheit),
                 stringResource(R.string.celsius)
             ),
-            selectedOption = selectedTempUnit.value,
+            selectedOption = when(selectedTempUnit.value){
+                "Kelvin" -> stringResource(R.string.kelvin)
+                "Fahrenheit" -> stringResource(R.string.fahrenheit)
+                "Celsius" -> stringResource(R.string.celsius)
+                else -> stringResource(R.string.kelvin)
+            },
             onOptionSelected = {
-               settingsViewModel.saveTempUnit(it)
+                when(it){
+                    "كلفن" -> settingsViewModel.saveTempUnit("Kelvin")
+                    "فهرنهايت" -> settingsViewModel.saveTempUnit("Fahrenheit")
+                    "سيلسيوس" -> settingsViewModel.saveTempUnit("Celsius")
+                    else -> settingsViewModel.saveTempUnit(it)
+                }
             }
         )
 
@@ -62,9 +81,17 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                 stringResource(R.string.gps),
                 stringResource(R.string.manual)
             ),
-            selectedOption = selectedLocation.value,
+            selectedOption = when(selectedLocation.value){
+                "GPS" -> stringResource(R.string.gps)
+                "Manual" -> stringResource(R.string.manual)
+                else -> stringResource(R.string.gps)
+            },
             onOptionSelected = {
-                settingsViewModel.saveLocationPref(it)
+                when(it){
+                    "نظام تحديد المواقع (GPS)" -> settingsViewModel.saveLocationPref("GPS")
+                    "يدوي" -> settingsViewModel.saveLocationPref("Manual")
+                    else -> settingsViewModel.saveLocationPref(it)
+                }
             }
         )
 

@@ -66,7 +66,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     weatherData.weather.firstOrNull()?.description ?: stringResource(
                         R.string.n_a
                     )
-                val dateAndTime = convertUnixTimestampToDateTime(weatherData.dt ?: 0)
+                val dateAndTime = convertUnixTimestampToDateTime(weatherData.dt ?: 0, homeViewModel.langPref)
                 val weatherIcon = weatherData.weather.firstOrNull()?.icon ?: ""
 
                 Row(
@@ -112,12 +112,13 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(Modifier.padding(10.dp)) {
-                        Text(text = "Humidity: $humidity%")
-                        Text(text = "Clouds: $cloudCoverage%")
+
+                        Text(text = "${stringResource(R.string.humidity)}: $humidity%")
+                        Text(text = "${stringResource(R.string.clouds)}: $cloudCoverage")
                     }
                     Column(Modifier.padding(10.dp)) {
-                        Text(text = "Wind Speed: $windSpeed $speedUnit")
-                        Text(text = "Pressure: $pressure hPa")
+                        Text(text = "${stringResource(R.string.wind_speed)}: $windSpeed $speedUnit")
+                        Text(text = "${stringResource(R.string.pressure)}: $pressure ${stringResource(R.string.hpa)}")
                     }
                 }
 
@@ -140,7 +141,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                         ) {
                             Text(
                                 text = convertUnixTimestampToDateTime(
-                                    todayForecast[index].dt ?: 0
+                                    todayForecast[index].dt ?: 0, homeViewModel.langPref
                                 ).substring(0, 3)
                             )
                             GlideImage(
@@ -177,10 +178,10 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                         ) {
 
                             Text(text = convertUnixTimestampToDateTime(
-                                forecasts[0].dt ?: 0
+                                forecasts[0].dt ?: 0, homeViewModel.langPref
                             ).substring(0, 3))
-                            Text(text = "H: ${maxTemp.roundToInt()}°$tempUnit")
-                            Text(text = "L: ${minTemp.roundToInt()}°$tempUnit")
+                            Text(text = "${stringResource(R.string.h)}: ${maxTemp.roundToInt()}°$tempUnit")
+                            Text(text = "${stringResource(R.string.l)}: ${minTemp.roundToInt()}°$tempUnit")
                         }
                     }
                 }
@@ -192,7 +193,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Error: ${weatherState.error.message}")
+                        Text(text = stringResource(R.string.error_fetching_data_for_this_city))
                     }
                 }
             }

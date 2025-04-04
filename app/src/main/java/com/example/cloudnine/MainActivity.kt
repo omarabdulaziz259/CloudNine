@@ -1,7 +1,10 @@
 package com.example.cloudnine
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -10,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,20 +28,32 @@ import com.example.cloudnine.home.HomeViewModel
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
 import com.example.cloudnine.navigation.BottomNavItem
 import com.example.cloudnine.navigation.BottomNavigationBar
+import com.example.cloudnine.settings.SettingsHelper
 import com.example.cloudnine.settings.SettingsScreen
 import com.example.cloudnine.settings.SettingsViewModel
 import com.example.cloudnine.utils.LocationHelper
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
-    override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(newBase)
-
-    }
+    //    override fun attachBaseContext(newBase: Context?) {
+//        val localeUpdatedContext = newBase?.let { applyAppLocale(it) }
+//        super.attachBaseContext(localeUpdatedContext)
+//
+//    }
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         val weatherRepository = WeatherRepository.getInstance(this)
         val locationHelper = LocationHelper(this)
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
+        val systemLanguage = Locale.getDefault().language
+        val appLangPref = sharedPreferences.getString(SettingsHelper.APP_LANGUAGE_PREF, "Default")
+        if (systemLanguage.equals("ar", ignoreCase = true) && appLangPref.equals("Default", ignoreCase = true) ){
+            sharedPreferences.edit().putString(SettingsHelper.API_LANGUAGE_PREF, "Arabic").apply()
+        } else if(systemLanguage.equals("en", ignoreCase = true) && appLangPref.equals("Default", ignoreCase = true)){
+            sharedPreferences.edit().putString(SettingsHelper.API_LANGUAGE_PREF, "English").apply()
+        }
+        Log.i("TAG", "onCreate: system lang is $systemLanguage")
         val homeViewModel = HomeViewModel(weatherRepository, locationHelper, sharedPreferences)
         val favoriteViewModel = FavoriteViewModel(weatherRepository, sharedPreferences)
         locationHelper.getLocation()
@@ -56,18 +72,30 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         homeViewModel = homeViewModel,
                         favoriteViewModel = favoriteViewModel,
-                        settingsViewModel = settingsViewModel)
+                        settingsViewModel = settingsViewModel
+                    )
                 }
             }
         }
     }
+
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController, homeViewModel: HomeViewModel, favoriteViewModel: FavoriteViewModel, settingsViewModel: SettingsViewModel) {
+fun NavigationGraph(
+    navController: NavHostController,
+    homeViewModel: HomeViewModel,
+    favoriteViewModel: FavoriteViewModel,
+    settingsViewModel: SettingsViewModel
+) {
     NavHost(navController, startDestination = BottomNavItem.Home.route) {
         composable(BottomNavItem.Home.route) { HomeScreen(homeViewModel) }
-        composable(BottomNavItem.Favorite.route) { FavoriteScreen(favoriteViewModel, navController) }
+        composable(BottomNavItem.Favorite.route) {
+            FavoriteScreen(
+                favoriteViewModel,
+                navController
+            )
+        }
         composable(BottomNavItem.Alert.route) { AlertScreen() }
         composable(BottomNavItem.Settings.route) { SettingsScreen(settingsViewModel) }
         composable("map_screen_from_fav") {
@@ -86,4 +114,21 @@ fun NavigationGraph(navController: NavHostController, homeViewModel: HomeViewMod
         }
     }
 }
-
+//
+//fun applyAppLocale(context: Context): Context {
+//    val sharedPreferences = context.getSharedPreferences("MyPreferences", MODE_PRIVATE)
+//    val lang = sharedPreferences.getString(SettingsHelper.LANGUAGE_PREF, "Default") ?: "Default"
+//
+//    val locale = when (lang) {
+//        "Arabic" -> Locale("ar")
+//        "English" -> Locale("en")
+//        else -> Locale.getDefault()
+//    }
+//
+//    Locale.setDefault(locale)
+//    val config = context.resources.configuration
+//    config.setLocale(locale)
+//
+//    return context.createConfigurationContext(config)
+//}
+//

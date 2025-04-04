@@ -36,9 +36,12 @@ class HomeViewModel(
 
     var unit: TemperatureUnit = TemperatureUnit.KELVIN
 
+    var langPref = sharedPreferences.getString(SettingsHelper.API_LANGUAGE_PREF, "English") ?: "English"
+
+
     fun fetchWeatherBasedOnPreference() {
         val locationPref = sharedPreferences.getString(SettingsHelper.LOCATION_PREF, "GPS")
-        val langPref = sharedPreferences.getString(SettingsHelper.LANGUAGE_PREF, "English")
+        langPref = sharedPreferences.getString(SettingsHelper.API_LANGUAGE_PREF, "English") ?: "English"
         val language = when (langPref) {
             "Arabic" -> Language.ARABIC
             "English" -> Language.ENGLISH
