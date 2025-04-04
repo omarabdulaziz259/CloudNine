@@ -10,6 +10,7 @@ import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.WeatherResponse
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
+import com.example.cloudnine.settings.SettingsHelper
 import com.example.cloudnine.utils.LocationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val weatherRepository: WeatherRepository,
     private val locationHelper: LocationHelper,
-    private val sharedPreferences: SharedPreferences) : ViewModel() {
+    private val sharedPreferences: SharedPreferences ) : ViewModel() {
     private val _weatherResponse: MutableStateFlow<Response<WeatherResponse>> =
         MutableStateFlow(Response.Loading)
     val weatherResponse = _weatherResponse.asStateFlow()
@@ -36,8 +37,8 @@ class HomeViewModel(
     var unit: TemperatureUnit = TemperatureUnit.KELVIN
 
     fun fetchWeatherBasedOnPreference() {
-        val locationPref = sharedPreferences.getString("locationPref", "GPS")
-        val langPref = sharedPreferences.getString("langPref", "ENGLISH")
+        val locationPref = sharedPreferences.getString(SettingsHelper.LOCATION_PREF, "GPS")
+        val langPref = sharedPreferences.getString(SettingsHelper.LANGUAGE_PREF, "ENGLISH")
         val language = when (langPref) {
             "ARABIC" -> Language.ARABIC
             "ENGLISH" -> Language.ENGLISH

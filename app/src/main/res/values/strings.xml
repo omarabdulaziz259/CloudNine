@@ -20,4 +20,16 @@
     <string name="no_favorite_cities">No Favorite Cities</string>
     <string name="error_fetching_favorite_cities">"Error: Fetching Favorite cities "</string>
     <string name="error_fetching_data_for_this_city">Error: Fetching Data For This City</string>
+    <string name="choose_location_on_map">Choose Location on Map</string>
+    <string name="language">Language</string>
+    <string name="arabic">Arabic</string>
+    <string name="english">English</string>
+    <string name="default_">Default</string>
+    <string name="temperature_unit">Temperature Unit</string>
+    <string name="kelvin">Kelvin</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="celsius">Celsius</string>
+    <string name="gps">GPS</string>
+    <string name="manual">Manual</string>
+    <string name="location_based">Location Based</string>
 </resources>

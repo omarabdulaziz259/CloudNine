@@ -1,5 +1,6 @@
 package com.example.cloudnine
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,9 +25,14 @@ import com.example.cloudnine.model.dataSource.repository.WeatherRepository
 import com.example.cloudnine.navigation.BottomNavItem
 import com.example.cloudnine.navigation.BottomNavigationBar
 import com.example.cloudnine.settings.SettingsScreen
+import com.example.cloudnine.settings.SettingsViewModel
 import com.example.cloudnine.utils.LocationHelper
 
 class MainActivity : ComponentActivity() {
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val weatherRepository = WeatherRepository.getInstance(this)
@@ -37,6 +43,7 @@ class MainActivity : ComponentActivity() {
         locationHelper.getLocation()
         setContent {
             val navController = rememberNavController()
+            val settingsViewModel = SettingsViewModel(navController, sharedPreferences)
             Scaffold(
                 bottomBar = {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -45,7 +52,11 @@ class MainActivity : ComponentActivity() {
                 }
             ) { innerPadding ->
                 Column(modifier = Modifier.padding(innerPadding)) {
-                    NavigationGraph(navController, homeViewModel, favoriteViewModel)
+                    NavigationGraph(
+                        navController = navController,
+                        homeViewModel = homeViewModel,
+                        favoriteViewModel = favoriteViewModel,
+                        settingsViewModel = settingsViewModel)
                 }
             }
         }
@@ -53,12 +64,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController, homeViewModel: HomeViewModel, favoriteViewModel: FavoriteViewModel) {
+fun NavigationGraph(navController: NavHostController, homeViewModel: HomeViewModel, favoriteViewModel: FavoriteViewModel, settingsViewModel: SettingsViewModel) {
     NavHost(navController, startDestination = BottomNavItem.Home.route) {
         composable(BottomNavItem.Home.route) { HomeScreen(homeViewModel) }
         composable(BottomNavItem.Favorite.route) { FavoriteScreen(favoriteViewModel, navController) }
         composable(BottomNavItem.Alert.route) { AlertScreen() }
-        composable(BottomNavItem.Settings.route) { SettingsScreen() }
+        composable(BottomNavItem.Settings.route) { SettingsScreen(settingsViewModel) }
         composable("map_screen_from_fav") {
             MapScreen(
                 fromSetting = false,
