@@ -35,11 +35,12 @@ import com.example.cloudnine.utils.LocationHelper
 import java.util.Locale
 
 class MainActivity : ComponentActivity() {
-    //    override fun attachBaseContext(newBase: Context?) {
-//        val localeUpdatedContext = newBase?.let { applyAppLocale(it) }
-//        super.attachBaseContext(localeUpdatedContext)
-//
-//    }
+    override fun attachBaseContext(newBase: Context?) {
+        val localeUpdatedContext = newBase?.let { applyAppLocale(it) }
+        super.attachBaseContext(localeUpdatedContext)
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -48,9 +49,17 @@ class MainActivity : ComponentActivity() {
         val sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE)
         val systemLanguage = Locale.getDefault().language
         val appLangPref = sharedPreferences.getString(SettingsHelper.APP_LANGUAGE_PREF, "Default")
-        if (systemLanguage.equals("ar", ignoreCase = true) && appLangPref.equals("Default", ignoreCase = true) ){
+        if (systemLanguage.equals("ar", ignoreCase = true) && appLangPref.equals(
+                "Default",
+                ignoreCase = true
+            )
+        ) {
             sharedPreferences.edit().putString(SettingsHelper.API_LANGUAGE_PREF, "Arabic").apply()
-        } else if(systemLanguage.equals("en", ignoreCase = true) && appLangPref.equals("Default", ignoreCase = true)){
+        } else if (systemLanguage.equals("en", ignoreCase = true) && appLangPref.equals(
+                "Default",
+                ignoreCase = true
+            )
+        ) {
             sharedPreferences.edit().putString(SettingsHelper.API_LANGUAGE_PREF, "English").apply()
         }
         Log.i("TAG", "onCreate: system lang is $systemLanguage")
@@ -114,21 +123,21 @@ fun NavigationGraph(
         }
     }
 }
-//
-//fun applyAppLocale(context: Context): Context {
-//    val sharedPreferences = context.getSharedPreferences("MyPreferences", MODE_PRIVATE)
-//    val lang = sharedPreferences.getString(SettingsHelper.LANGUAGE_PREF, "Default") ?: "Default"
-//
-//    val locale = when (lang) {
-//        "Arabic" -> Locale("ar")
-//        "English" -> Locale("en")
-//        else -> Locale.getDefault()
-//    }
-//
-//    Locale.setDefault(locale)
-//    val config = context.resources.configuration
-//    config.setLocale(locale)
-//
-//    return context.createConfigurationContext(config)
-//}
-//
+
+fun applyAppLocale(context: Context): Context {
+    val sharedPreferences = context.getSharedPreferences("MyPreferences", MODE_PRIVATE)
+    val lang = sharedPreferences.getString(SettingsHelper.APP_LANGUAGE_PREF, "Default") ?: "Default"
+
+    val locale = when (lang) {
+        "Arabic" -> Locale("ar")
+        "English" -> Locale("en")
+        else -> Locale.getDefault()
+    }
+
+    Locale.setDefault(locale)
+    val config = context.resources.configuration
+    config.setLocale(locale)
+
+    return context.createConfigurationContext(config)
+}
+
