@@ -3,6 +3,7 @@ package com.example.cloudnine.favorite
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Geocoder
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cloudnine.R
@@ -13,6 +14,7 @@ import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.WeatherResponse
 import com.example.cloudnine.model.dataSource.local.model.FavoriteCity
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
+import com.example.cloudnine.settings.SettingsHelper
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -151,17 +153,10 @@ class FavoriteViewModel(
     }
 
 
-    fun setAppLatitude(lat: Double) {
-        sharedPreferences.edit().apply {
-            putFloat("Latitude", lat.toFloat())
-            apply()
-        }
-    }
-
-    fun setAppLongitude(lon: Double) {
-        sharedPreferences.edit().apply {
-            putFloat("Longitude", lon.toFloat())
-            apply()
+    fun saveManualLonLat(lon: Double, lat: Double){
+        sharedPreferences.edit() {
+            putFloat(SettingsHelper.LONG_PREF, lon.toFloat())
+            putFloat(SettingsHelper.LAT_PREF, lat.toFloat())
         }
     }
 

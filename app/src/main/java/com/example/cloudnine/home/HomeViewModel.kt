@@ -38,17 +38,17 @@ class HomeViewModel(
 
     fun fetchWeatherBasedOnPreference() {
         val locationPref = sharedPreferences.getString(SettingsHelper.LOCATION_PREF, "GPS")
-        val langPref = sharedPreferences.getString(SettingsHelper.LANGUAGE_PREF, "ENGLISH")
+        val langPref = sharedPreferences.getString(SettingsHelper.LANGUAGE_PREF, "English")
         val language = when (langPref) {
-            "ARABIC" -> Language.ARABIC
-            "ENGLISH" -> Language.ENGLISH
+            "Arabic" -> Language.ARABIC
+            "English" -> Language.ENGLISH
             else -> Language.ENGLISH
         }
-        val unitsPref = sharedPreferences.getString("unitsPref", "KELVIN")
+        val unitsPref = sharedPreferences.getString(SettingsHelper.TEMP_UNIT_PREF, "Kelvin")
         val units = when (unitsPref) {
-            "KELVIN" -> TemperatureUnit.KELVIN
-            "CELSIUS" -> TemperatureUnit.CELSIUS
-            "FAHRENHEIT" -> TemperatureUnit.FAHRENHEIT
+            "Kelvin" -> TemperatureUnit.KELVIN
+            "Celsius" -> TemperatureUnit.CELSIUS
+            "Fahrenheit" -> TemperatureUnit.FAHRENHEIT
             else -> TemperatureUnit.KELVIN
         }
         unit = units
@@ -66,10 +66,9 @@ class HomeViewModel(
                     }
                 }
 
-                "Based Location" -> {
-
-                    val longPref = sharedPreferences.getFloat("longPref", 31.1f)
-                    val latPref = sharedPreferences.getFloat("latPref", 31.2f)
+                "Manual" -> {
+                    val longPref = sharedPreferences.getFloat(SettingsHelper.LONG_PREF, 31.1f)
+                    val latPref = sharedPreferences.getFloat(SettingsHelper.LAT_PREF, 31.2f)
 
                     getLocationFromPinnedLocation(
                         longPref.toDouble(),

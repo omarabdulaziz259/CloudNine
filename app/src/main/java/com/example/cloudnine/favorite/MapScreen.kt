@@ -224,8 +224,7 @@ private fun FromSettingConfiguration(favViewModel: FavoriteViewModel,navControll
     ){
         Button(
             onClick = {
-                favViewModel.setAppLatitude(lat)
-                favViewModel.setAppLongitude(lon)
+                favViewModel.saveManualLonLat(lon, lat)
                 navController.navigate(BottomNavItem.Settings.route)
             },
             colors = ButtonDefaults.buttonColors(Color.Black)

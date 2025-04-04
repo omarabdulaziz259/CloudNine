@@ -11,8 +11,6 @@ class SettingsViewModel(val navController: NavController, val sharedPreferences:
     var selectedLocation = mutableStateOf(getSavedLocationPref())
 
 
-
-
     fun saveLanguage(value: String) {
         selectedLanguage.value = value
         sharedPreferences.edit() { putString(SettingsHelper.LANGUAGE_PREF, value) }
