@@ -10,6 +10,7 @@ import com.example.cloudnine.model.ForecastResponse
 import com.example.cloudnine.model.Language
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.TemperatureUnit
+import com.example.cloudnine.model.WeatherResponse
 import com.example.cloudnine.model.dataSource.local.model.FavoriteCity
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +22,10 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.Locale
 
-class FavoriteViewModel(private val weatherRepository: WeatherRepository, val sharedPreferences: SharedPreferences) : ViewModel() {
+class FavoriteViewModel(
+    private val weatherRepository: WeatherRepository,
+    val sharedPreferences: SharedPreferences
+) : ViewModel() {
 
     private val _favCitiesResponse: MutableStateFlow<Response<List<FavoriteCity>?>> =
         MutableStateFlow(Response.Loading)
@@ -30,8 +34,11 @@ class FavoriteViewModel(private val weatherRepository: WeatherRepository, val sh
 
     private val _forecastResponse: MutableStateFlow<Response<ForecastResponse>> =
         MutableStateFlow(Response.Loading)
-    val forecastResponse =
-        _forecastResponse.asStateFlow()
+    val forecastResponse = _forecastResponse.asStateFlow()
+
+    private val _weatherResponse: MutableStateFlow<Response<WeatherResponse>> =
+        MutableStateFlow(Response.Loading)
+    val weatherResponse = _weatherResponse.asStateFlow()
 
     private val _message: MutableSharedFlow<Int?> = MutableSharedFlow()
     val message = _message.asSharedFlow()
@@ -102,7 +109,12 @@ class FavoriteViewModel(private val weatherRepository: WeatherRepository, val sh
         }
     }
 
-    fun getDailyForecasts(lat: Double, lon: Double, temperatureUnit: TemperatureUnit, language: Language) {
+    fun getDailyForecasts(
+        lat: Double,
+        lon: Double,
+        temperatureUnit: TemperatureUnit,
+        language: Language
+    ) {
         viewModelScope.launch {
             try {
                 weatherRepository.getRemoteDailyForecasts(
@@ -111,9 +123,9 @@ class FavoriteViewModel(private val weatherRepository: WeatherRepository, val sh
                     temperatureUnit = temperatureUnit,
                     language = language
                 ).catch {
-                        _forecastResponse.emit(Response.Failure(it))
+                    _forecastResponse.emit(Response.Failure(it))
                 }.collect {
-                        _forecastResponse.emit(Response.Success<ForecastResponse>(it as ForecastResponse))
+                    _forecastResponse.emit(Response.Success<ForecastResponse>(it as ForecastResponse))
                 }
             } catch (e: Exception) {
                 _forecastResponse.emit(Response.Failure(e))
@@ -121,8 +133,25 @@ class FavoriteViewModel(private val weatherRepository: WeatherRepository, val sh
         }
     }
 
+    fun getForecastForCity(city: FavoriteCity){
+        getDailyForecasts(lat = city.latitude, lon = city.longitude, temperatureUnit = units, language = language)
+    }
+    fun getWeatherForCity(city: FavoriteCity) {
+        viewModelScope.launch {
+            try {
+                weatherRepository.getRemoteCurrentDayWeather(
+                    lat = city.latitude,
+                    lon = city.longitude,
+                    temperatureUnit = units,
+                    language = language
+                ).catch { _weatherResponse.emit(Response.Failure(it)) }
+                    .collect { _weatherResponse.emit(Response.Success<WeatherResponse>(it as WeatherResponse)) }
+            } catch (e: Exception){ _weatherResponse.emit(Response.Failure(e))}
+        }
+    }
 
-    fun setAppLatitude( lat: Double) {
+
+    fun setAppLatitude(lat: Double) {
         sharedPreferences.edit().apply {
             putFloat("Latitude", lat.toFloat())
             apply()

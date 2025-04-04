@@ -17,4 +17,7 @@
     <string name="add_to_favourite">add to favourite</string>
     <string name="set_your_location">set your location</string>
     <string name="set_your_destination">set your destination</string>
+    <string name="no_favorite_cities">No Favorite Cities</string>
+    <string name="error_fetching_favorite_cities">"Error: Fetching Favorite cities "</string>
+    <string name="error_fetching_data_for_this_city">Error: Fetching Data For This City</string>
 </resources>
