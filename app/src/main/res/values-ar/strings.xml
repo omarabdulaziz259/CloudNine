@@ -50,4 +50,9 @@
     <string name="no">لا</string>
     <string name="question_mark">؟</string>
     <string name="search_location">البحث عن موقع</string>
+    <string name="select_a_city">اختر مدينة</string>
+    <string name="please_pick_a_future_time">من فضلك اختر وقتًا في المستقبل</string>
+    <string name="error_fetching_alarms_from_database">خطأ: فشل في جلب المنبهات من قاعدة البيانات</string>
+    <string name="city">المدينة</string>
+    <string name="triggered_time">وقت التشغيل</string>
 </resources>

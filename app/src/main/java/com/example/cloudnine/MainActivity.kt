@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cloudnine.alert.AlertScreen
+import com.example.cloudnine.alert.AlertViewModel
 import com.example.cloudnine.favorite.FavoriteScreen
 import com.example.cloudnine.favorite.FavoriteViewModel
 import com.example.cloudnine.favorite.MapScreen
@@ -99,6 +100,7 @@ class MainActivity : ComponentActivity() {
         Log.i("TAG", "onCreate: system lang is $systemLanguage")
         val homeViewModel = HomeViewModel(weatherRepository, locationHelper, sharedPreferences)
         val favoriteViewModel = FavoriteViewModel(weatherRepository, sharedPreferences)
+        val alertViewModel = AlertViewModel(weatherRepository, sharedPreferences)
         locationHelper.getLocation()
         setContent {
             val navController = rememberNavController()
@@ -115,7 +117,8 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         homeViewModel = homeViewModel,
                         favoriteViewModel = favoriteViewModel,
-                        settingsViewModel = settingsViewModel
+                        settingsViewModel = settingsViewModel,
+                        alertViewModel = alertViewModel
                     )
                 }
             }
@@ -129,7 +132,8 @@ fun NavigationGraph(
     navController: NavHostController,
     homeViewModel: HomeViewModel,
     favoriteViewModel: FavoriteViewModel,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
+    alertViewModel: AlertViewModel
 ) {
     NavHost(navController, startDestination = BottomNavItem.Home.route) {
         composable(BottomNavItem.Home.route) { HomeScreen(homeViewModel) }
@@ -139,7 +143,7 @@ fun NavigationGraph(
                 navController
             )
         }
-        composable(BottomNavItem.Alert.route) { AlertScreen() }
+        composable(BottomNavItem.Alert.route) { AlertScreen(alertViewModel) }
         composable(BottomNavItem.Settings.route) { SettingsScreen(settingsViewModel) }
         composable("map_screen_from_fav") {
             MapScreen(

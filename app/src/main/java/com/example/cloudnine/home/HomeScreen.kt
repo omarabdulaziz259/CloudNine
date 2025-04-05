@@ -20,7 +20,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.cloudnine.R
 import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.Response
-import com.example.cloudnine.utils.convertUnixTimestampToDateTime
+import com.example.cloudnine.utils.convertTimestampToDateTime
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -66,7 +66,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     weatherData.weather.firstOrNull()?.description ?: stringResource(
                         R.string.n_a
                     )
-                val dateAndTime = convertUnixTimestampToDateTime(weatherData.dt ?: 0, homeViewModel.langPref)
+                val dateAndTime = convertTimestampToDateTime(weatherData.dt ?: 0, homeViewModel.langPref)
                 val weatherIcon = weatherData.weather.firstOrNull()?.icon ?: ""
 
                 Row(
@@ -140,7 +140,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = convertUnixTimestampToDateTime(
+                                text = convertTimestampToDateTime(
                                     todayForecast[index].dt ?: 0, homeViewModel.langPref
                                 ).split(',')[0]
                             )
@@ -177,7 +177,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
-                            Text(text = convertUnixTimestampToDateTime(
+                            Text(text = convertTimestampToDateTime(
                                 forecasts[0].dt ?: 0, homeViewModel.langPref
                             ).split(',')[0])
                             Text(text = "${stringResource(R.string.h)}: ${maxTemp.roundToInt()}°$tempUnit")

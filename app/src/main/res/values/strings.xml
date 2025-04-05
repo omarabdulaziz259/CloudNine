@@ -49,4 +49,9 @@
     <string name="no">No</string>
     <string name="question_mark">\?</string>
     <string name="search_location">Search Location</string>
+    <string name="select_a_city">Select a City</string>
+    <string name="please_pick_a_future_time">Please pick a future time</string>
+    <string name="error_fetching_alarms_from_database">Error: Fetching alarms from database</string>
+    <string name="city">City</string>
+    <string name="triggered_time">Triggered Time</string>
 </resources>

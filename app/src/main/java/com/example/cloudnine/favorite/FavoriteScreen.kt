@@ -48,7 +48,7 @@ import com.example.cloudnine.R
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.dataSource.local.favoriteCity.model.FavoriteCity
-import com.example.cloudnine.utils.convertUnixTimestampToDateTime
+import com.example.cloudnine.utils.convertTimestampToDateTime
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.math.roundToInt
@@ -264,7 +264,7 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                 weatherData.weather.firstOrNull()?.description ?: stringResource(
                     R.string.n_a
                 )
-            val dateAndTime = convertUnixTimestampToDateTime(weatherData.dt ?: 0, favoriteViewModel.langPref)
+            val dateAndTime = convertTimestampToDateTime(weatherData.dt ?: 0, favoriteViewModel.langPref)
             val weatherIcon = weatherData.weather.firstOrNull()?.icon ?: ""
 
             val forecastData = forecastResponse.data
@@ -341,7 +341,7 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = convertUnixTimestampToDateTime(
+                            text = convertTimestampToDateTime(
                                 todayForecast[index].dt ?: 0, favoriteViewModel.langPref
                             ).split(',')[0]
                         )
@@ -379,7 +379,7 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                     ) {
 
                         Text(
-                            text = convertUnixTimestampToDateTime(
+                            text = convertTimestampToDateTime(
                                 forecasts[0].dt ?: 0, favoriteViewModel.langPref
                             ).split(',')[0]
                         )

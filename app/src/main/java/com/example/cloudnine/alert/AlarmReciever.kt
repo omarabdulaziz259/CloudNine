@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.NotificationCompat
@@ -22,6 +23,7 @@ class AlarmReceiver : BroadcastReceiver() {
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
         val alarmId = intent.getIntExtra("ALARM_ID", -1)
+        Log.i("TAG", "AlarmReceiver: $alarmId")
         val city = intent.getStringExtra("CITY")
         val lat = intent.getDoubleExtra("LAT", 0.0)
         val lon = intent.getDoubleExtra("LON", 0.0)
@@ -114,14 +116,14 @@ fun showNotification(context: Context, alarmId: Int, city: String, weatherMsg: S
 
     val snoozePendingIntent = PendingIntent.getBroadcast(
         context,
-        alarmId + 1,
+        alarmId,
         snoozeIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     val donePendingIntent = PendingIntent.getBroadcast(
         context,
-        alarmId + 2,
+        alarmId,
         doneIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )

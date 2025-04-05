@@ -4,8 +4,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-fun convertUnixTimestampToDateTime(timestamp: Long, apiLanguage: String): String {
-    val date = Date(timestamp * 1000)
+fun convertTimestampToDateTime(timestamp: Long, apiLanguage: String, isEpoch : Boolean= false): String {
+    val date = when(isEpoch){
+        false -> Date(timestamp * 1000)
+        true -> Date(timestamp)
+    }
     when {
         apiLanguage.equals("Arabic", ignoreCase = true) -> {
             val format = SimpleDateFormat("EEE, dd MMM yyyy HH:mm a", Locale("ar"))

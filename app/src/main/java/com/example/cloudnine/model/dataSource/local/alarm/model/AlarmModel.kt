@@ -6,8 +6,8 @@ import com.example.cloudnine.model.dataSource.local.favoriteCity.model.FavoriteC
 
 @Entity(tableName = "alarm_table")
 data class AlarmModel(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: Int,
     val triggerTimeInMillis: Long,
     val city: String,
     val lon: Double,
