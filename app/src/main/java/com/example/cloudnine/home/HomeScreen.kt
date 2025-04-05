@@ -142,7 +142,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                             Text(
                                 text = convertUnixTimestampToDateTime(
                                     todayForecast[index].dt ?: 0, homeViewModel.langPref
-                                ).substring(0, 3)
+                                ).split(',')[0]
                             )
                             GlideImage(
                                 model = "https://openweathermap.org/img/wn/${todayForecast[index].weather.firstOrNull()?.icon}@2x.png",
@@ -179,7 +179,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
 
                             Text(text = convertUnixTimestampToDateTime(
                                 forecasts[0].dt ?: 0, homeViewModel.langPref
-                            ).substring(0, 3))
+                            ).split(',')[0])
                             Text(text = "${stringResource(R.string.h)}: ${maxTemp.roundToInt()}°$tempUnit")
                             Text(text = "${stringResource(R.string.l)}: ${minTemp.roundToInt()}°$tempUnit")
                         }

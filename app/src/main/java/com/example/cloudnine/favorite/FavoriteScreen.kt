@@ -52,6 +52,7 @@ import com.example.cloudnine.utils.convertUnixTimestampToDateTime
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.math.roundToInt
+import kotlin.text.split
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -342,7 +343,7 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                         Text(
                             text = convertUnixTimestampToDateTime(
                                 todayForecast[index].dt ?: 0, favoriteViewModel.langPref
-                            ).substring(0, 3)
+                            ).split(',')[0]
                         )
                         GlideImage(
                             model = "https://openweathermap.org/img/wn/${todayForecast[index].weather.firstOrNull()?.icon}@2x.png",
@@ -380,7 +381,7 @@ fun WeatherDetailsBottomSheet(city: FavoriteCity, favoriteViewModel: FavoriteVie
                         Text(
                             text = convertUnixTimestampToDateTime(
                                 forecasts[0].dt ?: 0, favoriteViewModel.langPref
-                            ).substring(0, 3)
+                            ).split(',')[0]
                         )
                         Text(text = "${stringResource(R.string.h)}: ${maxTemp.roundToInt()}°$tempUnit")
                         Text(text = "${stringResource(R.string.l)}: ${minTemp.roundToInt()}°$tempUnit")
