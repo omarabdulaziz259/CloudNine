@@ -1,5 +1,8 @@
 package com.example.cloudnine.favorite
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,12 +32,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.cloudnine.BuildConfig
 import com.example.cloudnine.R
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.navigation.BottomNavItem
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -53,6 +61,16 @@ fun MapScreen(
     val cameraPositionState = rememberCameraPositionState { position = CameraPosition.fromLatLngZoom(defaultLocation, 10f) }
     var markerTitle by remember {mutableStateOf("Egypt")}
     val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val place = Autocomplete.getPlaceFromIntent(result.data!!)
+            defaultLocation = LatLng(place.latLng!!.latitude, place.latLng!!.longitude)
+        }
+    }
+
+    Places.initialize(context, BuildConfig.GOOGLE_API_KEY)
 
     LaunchedEffect (defaultLocation) {
         cameraPositionState.animate(update = CameraUpdateFactory.newLatLngZoom(defaultLocation,10f))
@@ -64,6 +82,14 @@ fun MapScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Button(onClick = {
+            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(context)
+            launcher.launch(intent)
+        }) {
+            Text("Search Location")
+        }
+
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,

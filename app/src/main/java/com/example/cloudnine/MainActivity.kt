@@ -127,6 +127,7 @@ fun NavigationGraph(
 fun applyAppLocale(context: Context): Context {
     val sharedPreferences = context.getSharedPreferences("MyPreferences", MODE_PRIVATE)
     val lang = sharedPreferences.getString(SettingsHelper.APP_LANGUAGE_PREF, "Default") ?: "Default"
+    Log.i("TAG", "applyAppLocale: $lang")
 
     val locale = when (lang) {
         "Arabic" -> Locale("ar")
@@ -134,6 +135,7 @@ fun applyAppLocale(context: Context): Context {
         else -> Locale.getDefault()
     }
 
+    Log.i("TAG", "applyAppLocale: ${locale.language}")
     Locale.setDefault(locale)
     val config = context.resources.configuration
     config.setLocale(locale)

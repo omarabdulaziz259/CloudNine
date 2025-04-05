@@ -19,32 +19,17 @@ class SettingsViewModel(
     fun saveLanguage(value: String) {
         selectedLanguage.value = value
         if (value == "Default"){
-            if (Locale.getDefault().language.equals("ar", ignoreCase = true)){
-                sharedPreferences.edit() {putString(SettingsHelper.API_LANGUAGE_PREF, "Arabic")}
-            }else {
-                sharedPreferences.edit()  {putString(SettingsHelper.API_LANGUAGE_PREF, "English")}
+            val systemLang = Locale.getDefault().language
+            sharedPreferences.edit {
+                putString(
+                    SettingsHelper.API_LANGUAGE_PREF,
+                    if (systemLang.equals("ar", ignoreCase = true)) "Arabic" else "English"
+                )
             }
         } else {
             sharedPreferences.edit { putString(SettingsHelper.API_LANGUAGE_PREF, value) }
         }
         sharedPreferences.edit() { putString(SettingsHelper.APP_LANGUAGE_PREF, value) }
-        updateAppLocale(value)
-    }
-
-    fun updateAppLocale(language: String) {
-        val locale = when (language) {
-            "Arabic" -> Locale("ar")
-            "English" -> Locale("en")
-            "Default" -> Locale.getDefault()
-            else -> Locale.getDefault()
-        }
-
-        Locale.setDefault(locale)
-        val config = android.content.res.Configuration()
-        config.setLocale(locale)
-
-        val context = navController.context
-        context.resources.updateConfiguration(config, context.resources.displayMetrics)
         restartActivity()
     }
 
