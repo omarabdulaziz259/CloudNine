@@ -1,4 +1,4 @@
-package com.example.cloudnine.model.dataSource.local.model
+package com.example.cloudnine.model.dataSource.local.favoriteCity.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -47,7 +47,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.cloudnine.R
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.TemperatureUnit
-import com.example.cloudnine.model.dataSource.local.model.FavoriteCity
+import com.example.cloudnine.model.dataSource.local.favoriteCity.model.FavoriteCity
 import com.example.cloudnine.utils.convertUnixTimestampToDateTime
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -201,7 +201,7 @@ fun DeleteConfirmationDialog(cityName: String, onConfirm: () -> Unit, onDismiss:
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.delete_city)) },
-        text = { Text("${stringResource(R.string.are_you_sure_you_want_to_delete)} $cityName?") },
+        text = { Text("${stringResource(R.string.are_you_sure_you_want_to_delete)} $cityName ${stringResource(R.string.question_mark)}") },
         confirmButton = {
             Button(onClick = onConfirm) { Text(stringResource(R.string.yes)) }
         },

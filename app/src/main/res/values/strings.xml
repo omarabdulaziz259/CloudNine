@@ -5,7 +5,7 @@
     <string name="c">C</string>
     <string name="k">K</string>
     <string name="f">F</string>
-    <string name="km_h">KM/H</string>
+    <string name="km_h">m/s</string>
     <string name="mph">mph</string>
     <string name="city_added_successfully">City added successfully</string>
     <string name="error_failed_to_insert_city">Error : Failed to insert city</string>
@@ -47,4 +47,6 @@
     <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="question_mark">\?</string>
+    <string name="search_location">Search Location</string>
 </resources>

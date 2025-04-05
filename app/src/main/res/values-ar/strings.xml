@@ -6,7 +6,7 @@
     <string name="c">س</string>
     <string name="k">ك</string>
     <string name="f">ف</string>
-    <string name="km_h">كم/س</string>
+    <string name="km_h">م/س</string>
     <string name="mph">ميل/س</string>
     <string name="city_added_successfully">تمت إضافة المدينة بنجاح</string>
     <string name="error_failed_to_insert_city">خطأ: فشل في إضافة المدينة</string>
@@ -44,4 +44,10 @@
     <string name="alert">التنبيهات</string>
     <string name="settings">الإعدادات</string>
     <string name="hpa">هكتوباسكال</string>
+    <string name="delete_city">حذف المدينة</string>
+    <string name="are_you_sure_you_want_to_delete">هل أنت متأكد أنك تريد حذف</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="question_mark">؟</string>
+    <string name="search_location">البحث عن موقع</string>
 </resources>

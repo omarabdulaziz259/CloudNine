@@ -12,7 +12,7 @@ import com.example.cloudnine.model.Language
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.WeatherResponse
-import com.example.cloudnine.model.dataSource.local.model.FavoriteCity
+import com.example.cloudnine.model.dataSource.local.favoriteCity.model.FavoriteCity
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
 import com.example.cloudnine.settings.SettingsHelper
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -1,17 +1,17 @@
-package com.example.cloudnine.model.dataSource.local
+package com.example.cloudnine.model.dataSource.local.favoriteCity
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
 import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import com.example.cloudnine.model.dataSource.local.model.FavoriteCity
+import androidx.room.Query
+import com.example.cloudnine.model.dataSource.local.favoriteCity.model.FavoriteCity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteCityDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
     suspend fun insertFavCity(favoriteCity: FavoriteCity) : Long
 
     @Delete

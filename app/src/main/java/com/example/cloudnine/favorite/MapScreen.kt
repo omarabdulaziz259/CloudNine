@@ -87,7 +87,7 @@ fun MapScreen(
             val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(context)
             launcher.launch(intent)
         }) {
-            Text("Search Location")
+            Text(stringResource(R.string.search_location))
         }
 
         GoogleMap(
