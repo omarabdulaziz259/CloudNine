@@ -40,8 +40,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.cloudnine.R
 import com.example.cloudnine.AlarmManager.AlarmScheduler
 import com.example.cloudnine.alert.viewModel.AlertViewModel
@@ -67,9 +69,10 @@ fun AlertScreen(alertViewModel: AlertViewModel) {
         alertViewModel.getAllFavCities()
     }
     Scaffold(
+        containerColor = Color.Transparent,
         floatingActionButton = {
             FloatingActionButton(onClick = { showBottomSheet.value = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Alarm")
+                Icon(painter = painterResource(R.drawable.add_alert), contentDescription = "Add Alarm")
             }
         }
     ) { padding ->
@@ -95,61 +98,70 @@ fun AlertScreen(alertViewModel: AlertViewModel) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LazyColumn {
-                    itemsIndexed(alarmsState.data ?: emptyList()) { index, item ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = "${stringResource(R.string.city)}: ${item.city}",
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                                Text(
-                                    text = "${stringResource(R.string.latitude)}: ${item.lat}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Text(
-                                    text = "${stringResource(R.string.longitude)}: ${item.lon}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Text(
+                if (alarmsState.data != null && alarmsState.data.isNotEmpty()){
+                    LazyColumn {
+                        itemsIndexed(alarmsState.data) { index, item ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Text(
+                                        text = "${stringResource(R.string.city)}: ${item.city}",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                    Text(
+                                        text = "${stringResource(R.string.latitude)}: ${item.lat}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
+                                        text = "${stringResource(R.string.longitude)}: ${item.lon}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
 
-                                    text = "${stringResource(R.string.triggered_time)}: ${
-                                        convertTimestampToDateTime(
-                                            item.triggerTimeInMillis,
-                                            apiLanguage = alertViewModel.langPref,
-                                            isEpoch = true
-                                        )
-                                    }",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            alertViewModel.deleteAlarm(item)
-                                            AlarmScheduler(context).cancelAlarm(item.id)
-                                        },
+                                        text = "${stringResource(R.string.triggered_time)}: ${
+                                            convertTimestampToDateTime(
+                                                item.triggerTimeInMillis,
+                                                apiLanguage = alertViewModel.langPref,
+                                                isEpoch = true
+                                            )
+                                        }",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Row(
                                         modifier = Modifier
-                                            .padding(4.dp)
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
                                     ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete City",
-                                            tint = Color.White,
-                                            modifier = Modifier.padding(4.dp)
-                                        )
+                                        IconButton(
+                                            onClick = {
+                                                alertViewModel.deleteAlarm(item)
+                                                AlarmScheduler(context).cancelAlarm(item.id)
+                                            },
+                                            modifier = Modifier
+                                                .padding(4.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete City",
+                                                tint = Color.White,
+                                                modifier = Modifier.padding(4.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                } else {
+                    Text(
+                        stringResource(R.string.no_scheduled_alarms),
+                        color = Color.White,
+                        fontSize = 25.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
             }
         }

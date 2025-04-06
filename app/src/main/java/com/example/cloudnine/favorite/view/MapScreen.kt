@@ -3,12 +3,14 @@ package com.example.cloudnine.favorite.view
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -58,9 +61,11 @@ fun MapScreen(
     navController: NavController,
     favViewModel: FavoriteViewModel
 ) {
-    var defaultLocation by remember { mutableStateOf(LatLng(30.0444,  31.2357))}
-    val cameraPositionState = rememberCameraPositionState { position = CameraPosition.fromLatLngZoom(defaultLocation, 10f) }
-    var markerTitle by remember {mutableStateOf("Egypt")}
+    var defaultLocation by remember { mutableStateOf(LatLng(30.0444, 31.2357)) }
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(defaultLocation, 10f)
+    }
+    var markerTitle by remember { mutableStateOf("Egypt") }
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -73,9 +78,18 @@ fun MapScreen(
 
     Places.initialize(context, BuildConfig.GOOGLE_API_KEY)
 
-    LaunchedEffect (defaultLocation) {
-        cameraPositionState.animate(update = CameraUpdateFactory.newLatLngZoom(defaultLocation,10f))
-        markerTitle = favViewModel.getCountryName(context, defaultLocation.latitude, defaultLocation.longitude) ?: ""
+    LaunchedEffect(defaultLocation) {
+        cameraPositionState.animate(
+            update = CameraUpdateFactory.newLatLngZoom(
+                defaultLocation,
+                10f
+            )
+        )
+        markerTitle = favViewModel.getCountryName(
+            context,
+            defaultLocation.latitude,
+            defaultLocation.longitude
+        ) ?: ""
     }
 
     Column(
@@ -83,12 +97,19 @@ fun MapScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Button(onClick = {
-            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
-            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(context)
-            launcher.launch(intent)
-        }) {
-            Text(stringResource(R.string.search_location))
+        Button(
+            onClick = {
+                val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+                val intent =
+                    Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                        .build(context)
+                launcher.launch(intent)
+            },
+            colors = ButtonDefaults.buttonColors(Color.LightGray)
+
+        ) {
+            Image(painter = painterResource(R.drawable.search), contentDescription = null, modifier = Modifier.size(30.dp))
+            Text(stringResource(R.string.search_location), fontSize = 18.sp, color = Color.Black)
         }
 
         GoogleMap(
@@ -113,9 +134,14 @@ fun MapScreen(
             )
         }
     }
-    if(fromSetting) {
-        FromSettingConfiguration(favViewModel,navController,defaultLocation.latitude, defaultLocation.longitude)
-    }else{
+    if (fromSetting) {
+        FromSettingConfiguration(
+            favViewModel,
+            navController,
+            defaultLocation.latitude,
+            defaultLocation.longitude
+        )
+    } else {
         ShowCardDetails(defaultLocation.latitude, defaultLocation.longitude, favViewModel)
     }
 }
@@ -124,7 +150,12 @@ fun MapScreen(
 fun ShowCardDetails(lat: Double, lon: Double, favViewModel: FavoriteViewModel) {
 
     val forecastResponse = favViewModel.forecastResponse.collectAsStateWithLifecycle().value
-    favViewModel.getDailyForecasts(lat = lat, lon = lon, temperatureUnit = favViewModel.units, language = favViewModel.language)
+    favViewModel.getDailyForecasts(
+        lat = lat,
+        lon = lon,
+        temperatureUnit = favViewModel.units,
+        language = favViewModel.language
+    )
 
     Column(
         modifier = Modifier
@@ -133,10 +164,11 @@ fun ShowCardDetails(lat: Double, lon: Double, favViewModel: FavoriteViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        when(forecastResponse) {
+        when (forecastResponse) {
             is Response.Loading -> {
                 CircularProgressIndicator()
             }
+
             is Response.Failure -> {
                 Text(
                     text = "${forecastResponse.error.message}",
@@ -145,6 +177,7 @@ fun ShowCardDetails(lat: Double, lon: Double, favViewModel: FavoriteViewModel) {
                     modifier = Modifier.padding(16.dp)
                 )
             }
+
             is Response.Success -> {
                 Card(
                     modifier = Modifier
@@ -157,7 +190,7 @@ fun ShowCardDetails(lat: Double, lon: Double, favViewModel: FavoriteViewModel) {
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Row (
+                        Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -217,7 +250,11 @@ fun ShowCardDetails(lat: Double, lon: Double, favViewModel: FavoriteViewModel) {
                         Button(
                             onClick = {
                                 forecastResponse.data.city?.let {
-                                    favViewModel.insertFavCity(it.name ?: "", it.coord?.lon ?: 0.0, it.coord?.lat ?: 0.0)
+                                    favViewModel.insertFavCity(
+                                        it.name ?: "",
+                                        it.coord?.lon ?: 0.0,
+                                        it.coord?.lat ?: 0.0
+                                    )
                                 }
                             },
                             modifier = Modifier
@@ -243,12 +280,17 @@ fun ShowCardDetails(lat: Double, lon: Double, favViewModel: FavoriteViewModel) {
 }
 
 @Composable
-private fun FromSettingConfiguration(favViewModel: FavoriteViewModel, navController: NavController, lat : Double, lon : Double ){
-    Column (
+private fun FromSettingConfiguration(
+    favViewModel: FavoriteViewModel,
+    navController: NavController,
+    lat: Double,
+    lon: Double
+) {
+    Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
-    ){
+    ) {
         Button(
             onClick = {
                 favViewModel.saveManualLonLat(lon, lat)

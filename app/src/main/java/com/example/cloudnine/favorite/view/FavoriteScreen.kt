@@ -1,5 +1,6 @@
 package com.example.cloudnine.favorite.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -68,11 +70,12 @@ fun FavoriteScreen(favoriteViewModel: FavoriteViewModel, navController: NavContr
     var isBottomSheetVisible = remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = Color.Transparent,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate("map_screen_from_fav") }
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add City")
+                Image(painter = painterResource(R.drawable.maps_location), contentDescription = "Add City", modifier = Modifier.size(30.dp))
             }
         }
     ) { padding ->
@@ -105,6 +108,8 @@ fun FavoriteScreen(favoriteViewModel: FavoriteViewModel, navController: NavContr
                     } else {
                         Text(
                             stringResource(R.string.no_favorite_cities),
+                            color = Color.White,
+                            fontSize = 25.sp,
                             modifier = Modifier.padding(16.dp)
                         )
                     }

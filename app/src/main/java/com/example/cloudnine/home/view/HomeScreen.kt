@@ -1,5 +1,6 @@
 package com.example.cloudnine.home.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -12,9 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.cloudnine.R
@@ -67,59 +71,136 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     weatherData.weather.firstOrNull()?.description ?: stringResource(
                         R.string.n_a
                     )
-                val dateAndTime = convertTimestampToDateTime(weatherData.dt ?: 0, homeViewModel.langPref)
+                val dateAndTime =
+                    convertTimestampToDateTime(weatherData.dt ?: 0, homeViewModel.langPref)
                 val weatherIcon = weatherData.weather.firstOrNull()?.icon ?: ""
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = weatherDescription,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-                    Text(
-                        text = dateAndTime,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .width(140.dp)
+                            .height(110.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.Black.copy(alpha = 0.5f)),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = weatherDescription,
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .width(140.dp)
+                            .height(110.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.Black.copy(alpha = 0.5f)),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = dateAndTime,
+                            fontSize = 16.sp,
+                            color = Color.White,
+                        )
+                    }
                 }
 
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(10.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+
                 ) {
                     Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .width(160.dp)
+                            .height(160.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White.copy(alpha = 0.5f)),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         GlideImage(
                             model = "https://openweathermap.org/img/wn/${weatherIcon}@2x.png",
                             contentDescription = "Weather Descriptive Icon",
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(60.dp)
                         )
-                        Text(text = "$currentTemperature °$tempUnit")
-                        Text(text = cityName ?: stringResource(R.string.n_a))
+                        Text(
+                            text = "$currentTemperature °$tempUnit", fontSize = 16.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = cityName ?: stringResource(R.string.n_a), fontSize = 16.sp,
+                            color = Color.White
+                        )
                     }
                 }
 
                 Row(
                     modifier = Modifier
                         .padding(10.dp)
-                        .fillMaxWidth()
-                        .border(width = 2.dp, color = Color.Black),
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(Modifier.padding(10.dp)) {
+                    Column(
+                        Modifier
+                            .padding(10.dp)
+                            .width(160.dp)
+                            .height(60.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.Black.copy(alpha = 0.5f)),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-                        Text(text = "${stringResource(R.string.humidity)}: $humidity%")
-                        Text(text = "${stringResource(R.string.clouds)}: $cloudCoverage")
+                        Text(
+                            text = "${stringResource(R.string.humidity)}: $humidity%",
+                            fontSize = 15.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "${stringResource(R.string.clouds)}: $cloudCoverage",
+                            fontSize = 15.sp,
+                            color = Color.White
+                        )
                     }
-                    Column(Modifier.padding(10.dp)) {
-                        Text(text = "${stringResource(R.string.wind_speed)}: $windSpeed $speedUnit")
-                        Text(text = "${stringResource(R.string.pressure)}: $pressure ${stringResource(R.string.hpa)}")
+                    Column(
+                        Modifier
+                            .padding(10.dp)
+                            .width(160.dp)
+                            .height(60.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.Black.copy(alpha = 0.5f)),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+
+                    ) {
+                        Text(
+                            text = "${stringResource(R.string.wind_speed)}: $windSpeed $speedUnit",
+                            fontSize = 15.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "${stringResource(R.string.pressure)}: $pressure ${
+                                stringResource(
+                                    R.string.hpa
+                                )
+                            }",
+                            fontSize = 15.sp,
+                            color = Color.White
+                        )
                     }
                 }
 
@@ -132,18 +213,25 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                 LazyRow(
                     Modifier
                         .padding(10.dp)
-                        .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
                 ) {
                     items(todayForecast.size) { index ->
                         Column(
                             modifier = Modifier
-                                .padding(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .padding(10.dp)
+                                .width(100.dp)
+                                .height(100.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color.White.copy(alpha = 0.5f)),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
                             Text(
                                 text = convertTimestampToDateTime(
                                     todayForecast[index].dt ?: 0, homeViewModel.langPref
-                                ).split(',')[0]
+                                ).split(',')[0],
+                                fontSize = 16.sp,
+                                color = Color.White
+
                             )
                             GlideImage(
                                 model = "https://openweathermap.org/img/wn/${todayForecast[index].weather.firstOrNull()?.icon}@2x.png",
@@ -152,6 +240,8 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                             )
                             Text(
                                 text = "${todayForecast[index].main?.temp}°$tempUnit",
+                                fontSize = 16.sp,
+                                color = Color.White,
                                 modifier = Modifier.padding(5.dp)
                             )
                         }
@@ -164,7 +254,6 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     Modifier
                         .padding(10.dp)
                         .fillMaxWidth()
-                        .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
                 ) {
                     items(upcomingDays.entries.toList()) { (_, forecasts) ->
                         val minTemp =
@@ -174,29 +263,46 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
 
                         Column(
                             modifier = Modifier
-                                .padding(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .padding(10.dp)
+                                .width(100.dp)
+                                .height(100.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color.Black.copy(alpha = 0.5f)),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
 
-                            Text(text = convertTimestampToDateTime(
-                                forecasts[0].dt ?: 0, homeViewModel.langPref
-                            ).split(',')[0])
-                            Text(text = "${stringResource(R.string.h)}: ${maxTemp.roundToInt()}°$tempUnit")
-                            Text(text = "${stringResource(R.string.l)}: ${minTemp.roundToInt()}°$tempUnit")
+                            Text(
+                                text = convertTimestampToDateTime(
+                                    forecasts[0].dt ?: 0, homeViewModel.langPref
+                                ).split(',')[0],
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "${stringResource(R.string.h)}: ${maxTemp.roundToInt()}°$tempUnit",
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "${stringResource(R.string.l)}: ${minTemp.roundToInt()}°$tempUnit",
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
                         }
                     }
                 }
             }
 
-                forecastState is Response.Failure && weatherState is Response.Failure -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = stringResource(R.string.error_fetching_data_for_this_city))
-                    }
+            forecastState is Response.Failure && weatherState is Response.Failure -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = stringResource(R.string.error_fetching_data_for_this_city))
                 }
             }
         }
     }
+}
