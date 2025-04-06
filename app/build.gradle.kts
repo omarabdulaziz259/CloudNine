@@ -175,6 +175,5 @@ dependencies {
 }
 secrets {
     propertiesFileName = "secrets.properties"
-
     defaultPropertiesFileName = "local.properties"
 }

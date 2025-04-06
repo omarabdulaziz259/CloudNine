@@ -22,8 +22,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCENEcdguzaoF7LVRnjNQK5SWWRlr0dQSo"/>
-        <receiver android:name=".alert.AlarmReceiver" />
-        <receiver android:name=".alert.AlarmActionReceiver" />
+        <receiver android:name=".BroadcastReceiver.AlarmReceiver" />
+        <receiver android:name=".BroadcastReceiver.AlarmActionReceiver" />
         <activity
             android:name=".MainActivity"
             android:configChanges="locale|layoutDirection"

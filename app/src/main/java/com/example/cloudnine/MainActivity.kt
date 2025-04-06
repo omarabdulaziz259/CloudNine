@@ -9,12 +9,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -22,8 +29,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.cloudnine.alert.AlertScreen
-import com.example.cloudnine.alert.AlertViewModel
+import com.example.cloudnine.alert.view.AlertScreen
+import com.example.cloudnine.alert.viewModel.AlertViewModel
 import com.example.cloudnine.favorite.FavoriteScreen
 import com.example.cloudnine.favorite.FavoriteViewModel
 import com.example.cloudnine.favorite.MapScreen
@@ -103,8 +110,10 @@ class MainActivity : ComponentActivity() {
         val alertViewModel = AlertViewModel(weatherRepository, sharedPreferences)
         locationHelper.getLocation()
         setContent {
+
             val navController = rememberNavController()
             val settingsViewModel = SettingsViewModel(navController, sharedPreferences)
+
             Scaffold(
                 bottomBar = {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -120,6 +129,7 @@ class MainActivity : ComponentActivity() {
                         settingsViewModel = settingsViewModel,
                         alertViewModel = alertViewModel
                     )
+
                 }
             }
         }

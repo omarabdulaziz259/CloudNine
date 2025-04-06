@@ -11,7 +11,7 @@ import com.example.cloudnine.model.dataSource.local.favoriteCity.model.FavoriteC
 import com.example.cloudnine.model.dataSource.remote.WeatherRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 
-class WeatherRepository private constructor(
+class WeatherRepository (
     val remoteDataSource: WeatherRemoteDataSource, val LocalDataSource: WeatherLocalDataSource
 ) {
 
@@ -34,7 +34,7 @@ class WeatherRepository private constructor(
         )
     }
 
-    suspend fun getLocalAllFavoriteCities(): Flow<List<FavoriteCity>> {
+    fun getLocalAllFavoriteCities(): Flow<List<FavoriteCity>> {
         return LocalDataSource.getAllFavoriteCities()
     }
 
