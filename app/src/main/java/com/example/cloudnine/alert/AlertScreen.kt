@@ -131,7 +131,10 @@ fun AlertScreen(alertViewModel: AlertViewModel) {
                                     horizontalArrangement = Arrangement.End
                                 ) {
                                     IconButton(
-                                        onClick = { alertViewModel.deleteAlarm(item) },
+                                        onClick = {
+                                            alertViewModel.deleteAlarm(item)
+                                            AlarmScheduler(context).cancelAlarm(item.id)
+                                        },
                                         modifier = Modifier
                                             .padding(4.dp)
                                     ) {

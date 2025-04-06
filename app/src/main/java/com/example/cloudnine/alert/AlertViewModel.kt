@@ -46,6 +46,7 @@ class AlertViewModel (private val weatherRepository: WeatherRepository, val shar
             }
         }
     }
+
     fun getAllFavCities() {
         viewModelScope.launch {
             try {
