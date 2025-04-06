@@ -1,10 +1,11 @@
-package com.example.cloudnine.settings
+package com.example.cloudnine.settings.viewModel
 
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.edit
 import androidx.navigation.NavController
+import com.example.cloudnine.settings.SettingsHelper
 import java.util.Locale
 
 class SettingsViewModel(

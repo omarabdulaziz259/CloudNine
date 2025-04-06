@@ -1,4 +1,4 @@
-package com.example.cloudnine.settings
+package com.example.cloudnine.settings.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.cloudnine.R
+import com.example.cloudnine.settings.viewModel.SettingsViewModel
 
 @Composable
 fun SettingsScreen(settingsViewModel: SettingsViewModel) {

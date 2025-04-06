@@ -1,4 +1,4 @@
-package com.example.cloudnine.favorite
+package com.example.cloudnine.favorite.view
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -45,6 +46,7 @@ import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.cloudnine.R
+import com.example.cloudnine.favorite.viewModel.FavoriteViewModel
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.dataSource.local.favoriteCity.model.FavoriteCity
@@ -198,7 +200,7 @@ fun CityItem(
 
 @Composable
 fun DeleteConfirmationDialog(cityName: String, onConfirm: () -> Unit, onDismiss: () -> Unit) {
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.delete_city)) },
         text = { Text("${stringResource(R.string.are_you_sure_you_want_to_delete)} $cityName ${stringResource(R.string.question_mark)}") },

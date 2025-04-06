@@ -1,4 +1,4 @@
-package com.example.cloudnine.home
+package com.example.cloudnine.home.view
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.cloudnine.R
+import com.example.cloudnine.home.viemModel.HomeViewModel
 import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.utils.convertTimestampToDateTime

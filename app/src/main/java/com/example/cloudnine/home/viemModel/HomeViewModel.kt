@@ -1,4 +1,4 @@
-package com.example.cloudnine.home
+package com.example.cloudnine.home.viemModel
 
 import android.content.SharedPreferences
 import android.location.Location
@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cloudnine.model.ForecastResponse
 import com.example.cloudnine.model.Language
+import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.TemperatureUnit
 import com.example.cloudnine.model.WeatherResponse
-import com.example.cloudnine.model.Response
 import com.example.cloudnine.model.dataSource.repository.WeatherRepository
 import com.example.cloudnine.settings.SettingsHelper
 import com.example.cloudnine.utils.LocationHelper
@@ -20,7 +20,8 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val weatherRepository: WeatherRepository,
     private val locationHelper: LocationHelper,
-    private val sharedPreferences: SharedPreferences ) : ViewModel() {
+    private val sharedPreferences: SharedPreferences
+) : ViewModel() {
     private val _weatherResponse: MutableStateFlow<Response<WeatherResponse>> =
         MutableStateFlow(Response.Loading)
     val weatherResponse = _weatherResponse.asStateFlow()

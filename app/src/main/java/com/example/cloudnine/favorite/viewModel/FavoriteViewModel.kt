@@ -1,4 +1,4 @@
-package com.example.cloudnine.favorite
+package com.example.cloudnine.favorite.viewModel
 
 import android.content.Context
 import android.content.SharedPreferences

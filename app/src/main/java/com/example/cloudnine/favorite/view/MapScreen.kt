@@ -1,4 +1,4 @@
-package com.example.cloudnine.favorite
+package com.example.cloudnine.favorite.view
 
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.cloudnine.BuildConfig
 import com.example.cloudnine.R
+import com.example.cloudnine.favorite.viewModel.FavoriteViewModel
 import com.example.cloudnine.model.Response
 import com.example.cloudnine.navigation.BottomNavItem
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -242,7 +243,7 @@ fun ShowCardDetails(lat: Double, lon: Double, favViewModel: FavoriteViewModel) {
 }
 
 @Composable
-private fun FromSettingConfiguration(favViewModel: FavoriteViewModel,navController: NavController,lat : Double, lon : Double ){
+private fun FromSettingConfiguration(favViewModel: FavoriteViewModel, navController: NavController, lat : Double, lon : Double ){
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
